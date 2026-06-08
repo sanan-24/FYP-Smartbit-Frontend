@@ -6,12 +6,9 @@ import {
   UserCircle,
   Loader2,
   RefreshCcw,
-  Shield,
-  Mail,
-  Calendar,
   Edit2
 } from 'lucide-react';
-import { fetchAllUsers, updateUserRole, deleteUser } from '../redux/adminSlice';
+import { fetchAllUsers, deleteUser } from '../redux/adminSlice';
 import Button from '../../../components/Button';
 import Pagination from '../../../components/Pagination';
 
@@ -30,12 +27,6 @@ const UserManagement = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
-
-  const handleRoleChange = (id, newRole) => {
-    if (window.confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
-      dispatch(updateUserRole({ id, role: newRole }));
-    }
-  };
 
   const handleDeleteUser = (id) => {
     if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {

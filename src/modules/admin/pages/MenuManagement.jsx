@@ -19,7 +19,7 @@ import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { fetchCategories as fetchGlobalCategories, addProduct, fetchProducts, updateProduct, deleteProduct } from '../../../features/productSlice';
-import { addCategory, updateCategory, deleteCategory, clearAdminError } from '../redux/adminSlice';
+import { addCategory, updateCategory, deleteCategory } from '../redux/adminSlice';
 
 const MenuManagement = () => {
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ const MenuManagement = () => {
   });
   const [imagePreview, setImagePreview] = useState(null);
 
-  const [activeCategory, setActiveCategory] = useState('All');
+  const activeCategory = 'All';
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredItems = menuItems.filter(item => {

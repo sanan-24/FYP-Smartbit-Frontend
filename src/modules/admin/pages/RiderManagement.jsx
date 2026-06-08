@@ -1,32 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
-  UserPlus, 
   Search, 
   Trash2, 
   Mail, 
   Lock, 
-  Loader2,
   Bike,
-  Filter,
-  Edit2,
-  Star,
   RefreshCcw,
   Plus,
   Power
 } from 'lucide-react';
-import { createRider, fetchAllRiders, deleteRider, fetchAvailableRiders } from '../redux/adminSlice';
+import { createRider, fetchAllRiders, deleteRider } from '../redux/adminSlice';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
-import Pagination from '../../../components/Pagination';
 
 const RiderManagement = () => {
-  const { riders, loading, error } = useSelector((state) => state.admin);
-  const [showModal, setShowModal] = useState(false);
+  const { riders, loading } = useSelector((state) => state.admin);
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -37,11 +28,6 @@ const RiderManagement = () => {
   useEffect(() => {
     dispatch(fetchAllRiders());
   }, [dispatch]);
-
-  // Reset to page 1 when searching
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

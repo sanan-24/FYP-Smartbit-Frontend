@@ -9,17 +9,15 @@ import {
   CheckCircle,
   Loader2,
   Bike,
-  RefreshCcw,
-  History as HistoryIcon
+  RefreshCcw
 } from 'lucide-react';
 import { updateOrderStatusRider, fetchAssignedOrders } from '../redux/riderSlice';
-import Button from '../../../components/Button';
 import LiveTrackingMap from '../../../components/LiveTrackingMap';
 import NotificationModal from '../../../components/NotificationModal';
 import socketService from '../../../api/socket';
 
 const RiderOrders = () => {
-  const { assignedOrders, loading, error } = useSelector((state) => state.rider);
+  const { assignedOrders, loading } = useSelector((state) => state.rider);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 

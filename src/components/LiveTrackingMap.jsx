@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import socketService from '../api/socket';
 import riderApi from '../api/rider';
-import { Bike, MapPin, Info, Navigation2, Clock, Map as MapIcon, Loader2 } from 'lucide-react';
+import { Info, Navigation2, Clock, Map as MapIcon, Loader2 } from 'lucide-react';
 
 const containerStyle = {
   width: '100%',
@@ -14,6 +14,7 @@ const containerStyle = {
 const LiveTrackingMap = ({ riderId, orderId, destinationAddress }) => {
   const { user } = useSelector((state) => state.auth);
   const { currentLocation } = useSelector((state) => state.rider);
+  const userId = user?._id;
   const [riderLocation, setRiderLocation] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState('');
@@ -38,7 +39,7 @@ const LiveTrackingMap = ({ riderId, orderId, destinationAddress }) => {
   // Fetch Initial Rider Location
   useEffect(() => {
     // If it's the current rider viewing their own map, use local state
-    if (riderId === user?._id && currentLocation) {
+    if (riderId === userId && currentLocation) {
       setRiderLocation(currentLocation);
       setLoading(false);
       return;
@@ -72,10 +73,10 @@ const LiveTrackingMap = ({ riderId, orderId, destinationAddress }) => {
     return () => {
       socketService.off('rider_location_changed');
     };
-  }, [riderId]);
+  }, [riderId, userId, currentLocation]);
 
   // Calculate Route whenever rider location or destination changes
-  const calculateRoute = async (currentRiderLoc) => {
+  const calculateRoute = useCallback(async (currentRiderLoc, targetMap) => {
     if (!window.google || !currentRiderLoc || !destinationAddress) return;
     
     try {
@@ -90,31 +91,32 @@ const LiveTrackingMap = ({ riderId, orderId, destinationAddress }) => {
         setDistance(results.routes[0].legs[0].distance.text);
         setDuration(results.routes[0].legs[0].duration.text);
 
-        if (map) {
+        const mapInstance = targetMap || map;
+        if (mapInstance) {
             const bounds = new window.google.maps.LatLngBounds();
             bounds.extend(currentRiderLoc);
             bounds.extend(results.routes[0].legs[0].end_location);
-            map.fitBounds(bounds, { top: 50, bottom: 50, left: 50, right: 50 });
+            mapInstance.fitBounds(bounds, { top: 50, bottom: 50, left: 50, right: 50 });
         }
     } catch (error) {
         console.error("Directions request failed:", error);
     }
-  };
+  }, [destinationAddress, map]);
 
   useEffect(() => {
     if (riderLocation && isGoogleReady) {
       calculateRoute(riderLocation);
     }
-  }, [riderLocation, isGoogleReady, destinationAddress]);
+  }, [riderLocation, isGoogleReady, calculateRoute]);
 
-  const onLoad = React.useCallback(async function callback(map) {
-    setMap(map);
+  const onLoad = useCallback(async function callback(loadedMap) {
+    setMap(loadedMap);
     if (riderLocation) {
-        calculateRoute(riderLocation);
+        calculateRoute(riderLocation, loadedMap);
     }
-  }, [riderLocation]);
+  }, [calculateRoute, riderLocation]);
 
-  const onUnmount = React.useCallback(function callback(map) {
+  const onUnmount = useCallback(function callback(map) {
     setMap(null);
   }, []);
 

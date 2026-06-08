@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { 
   Search, 
   Filter, 
-  MoreHorizontal, 
   Eye,
   Loader2,
   RefreshCcw,
-  Bike,
   MapPin,
   X
 } from 'lucide-react';

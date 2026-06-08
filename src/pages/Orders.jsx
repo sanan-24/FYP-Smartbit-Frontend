@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Package, Clock, CheckCircle, ChevronRight, ShoppingBag, Loader2 } from 'lucide-react';
+import { Package, ChevronRight, ShoppingBag, Loader2 } from 'lucide-react';
 import { fetchMyOrders } from '../features/orderSlice';
 import Button from '../components/Button';
 import socketService from '../api/socket';

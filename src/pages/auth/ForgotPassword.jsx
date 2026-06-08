@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Mail, ArrowRight, ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { forgotPassword, clearError } from '../../features/authSlice';
+import { forgotPassword } from '../../features/authSlice';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 

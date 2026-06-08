@@ -16,14 +16,14 @@ import {
   Phone,
   Star
 } from 'lucide-react';
-import { updateOrderStatusRider, fetchAssignedOrders, toggleRiderAvailability, fetchRiderStats, updateRiderLocation } from '../redux/riderSlice';
+import { updateOrderStatusRider, fetchAssignedOrders, toggleRiderAvailability, fetchRiderStats } from '../redux/riderSlice';
 import Button from '../../../components/Button';
 import socketService from '../../../api/socket';
 import NotificationModal from '../../../components/NotificationModal';
 import LiveTrackingMap from '../../../components/LiveTrackingMap';
 
 const RiderDashboard = () => {
-  const { assignedOrders, riderStats, loading, error, isAvailable } = useSelector((state) => state.rider);
+  const { assignedOrders, riderStats, loading, isAvailable } = useSelector((state) => state.rider);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -228,7 +228,11 @@ const RiderDashboard = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
-                  <Button variant="outline" className="flex items-center justify-center py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[9px] md:text-[10px] uppercase tracking-widest border-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleNavigate(order._id)}
+                    className="flex items-center justify-center py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[9px] md:text-[10px] uppercase tracking-widest border-2"
+                  >
                     <Navigation className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4" /> Directions
                   </Button>
                   {order.status !== 'delivered' && (
@@ -241,6 +245,16 @@ const RiderDashboard = () => {
                     </Button>
                   )}
                 </div>
+
+                {activeMapOrderId === order._id && (
+                  <div className="rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 md:border-4 border-slate-50 dark:border-secondary-800 shadow-2xl animate-in zoom-in-95 duration-500">
+                    <LiveTrackingMap
+                      riderId={user?._id}
+                      orderId={order._id}
+                      destinationAddress={order.address}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           )) : (

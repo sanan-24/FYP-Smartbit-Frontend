@@ -20,7 +20,6 @@ import {
   ArrowDownRight,
   TrendingUp,
   Loader2,
-  Download,
   FileText,
   Table
 } from 'lucide-react';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Star, X, MessageSquare, Loader2 } from 'lucide-react';
+import { Star, X, MessageSquare } from 'lucide-react';
 import Button from './Button';
 import reviewApi from '../api/review';
 
