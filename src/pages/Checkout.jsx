@@ -201,7 +201,7 @@ const Checkout = () => {
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button variant="outline" onClick={() => setStep(1)} className="flex-1">Back</Button>
                   <Button onClick={() => handlePlaceOrder()} loading={orderLoading} className="flex-1">
-                    Place Order Rs. {finalTotal}
+                    Pay Rs. {finalTotal} & Place Order
                   </Button>
                 </div>
               )}
