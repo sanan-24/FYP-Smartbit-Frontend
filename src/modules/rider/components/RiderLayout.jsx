@@ -55,12 +55,12 @@ const RiderLayout = () => {
   }, [isAvailable, dispatch, user?._id]);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-secondary-950 transition-colors duration-500 overflow-x-hidden">
+    <div className="flex h-screen bg-slate-50 dark:bg-secondary-950 transition-colors duration-500 overflow-hidden">
       <RiderSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
-      <div className="flex-grow flex flex-col min-w-0">
+      <div className="flex-grow flex flex-col min-w-0 overflow-hidden">
         {/* Rider Topbar */}
-        <header className="h-16 md:h-24 bg-white/80 dark:bg-secondary-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 flex items-center justify-between px-4 md:px-10 sticky top-0 z-40">
+        <header className="h-16 md:h-24 bg-white/80 dark:bg-secondary-900/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 flex items-center justify-between px-4 md:px-10 flex-shrink-0 z-40">
           <div className="flex items-center space-x-3 md:space-x-4">
             <button 
               onClick={() => setIsSidebarOpen(true)}
@@ -102,8 +102,10 @@ const RiderLayout = () => {
         </header>
 
         {/* Rider Content Area */}
-        <main className="p-3 md:p-10 flex-grow max-w-[1600px] mx-auto w-full">
-          <Outlet />
+        <main className="flex-grow overflow-y-auto p-3 md:p-10">
+          <div className="max-w-[1600px] mx-auto w-full">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ShoppingCart, Heart, Search, Menu, X, LogOut, User, ClipboardList, Home as HomeIcon, LayoutGrid } from 'lucide-react';
-import { useState } from 'react';
+import {
+  ShoppingCart, Heart, Search, Menu, X,
+  LogOut, User, ClipboardList, Home as HomeIcon, LayoutGrid,
+} from 'lucide-react';
 import { logoutUser } from '../features/authSlice';
 
 const Navbar = () => {
@@ -13,265 +15,218 @@ const Navbar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const normalizedPath = pathname !== '/' ? pathname.replace(/\/+$/, '') : pathname;
 
-  // Close mobile menu on route change
-  React.useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  React.useEffect(() => { setIsOpen(false); }, [pathname]);
 
   const isAuthPage = normalizedPath === '/login' || normalizedPath === '/signup';
   const guestCta = normalizedPath === '/signup'
     ? { to: '/login', label: 'Login' }
     : { to: '/signup', label: 'Sign Up' };
 
-  // Helper to format image URL
   const getImageUrl = (path) => {
     if (!path) return null;
-    
-    let cleanPath = path.trim().replace(/^`|`$/g, '');
-    cleanPath = cleanPath.replace(/\\/g, '/');
-    
+    let cleanPath = path.trim().replace(/^`|`$/g, '').replace(/\\/g, '/');
     if (cleanPath.startsWith('http')) return cleanPath;
-    
-    let baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1/';
-    baseUrl = baseUrl.replace(/\/api\/v1\/?$/, ''); 
-    
-    const finalBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-    
-    // If path doesn't start with a slash and doesn't look like it has a folder, 
-    // it might be in an 'uploads' or 'public' folder that isn't in the path string
-    let finalPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
-    
-    return `${finalBaseUrl}${finalPath}`;
+    let baseUrl = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1/').replace(/\/api\/v1\/?$/, '');
+    const base = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    return `${base}${cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath}`;
   };
 
   const handleLogout = async () => {
+    setIsOpen(false);
     await dispatch(logoutUser());
     navigate('/login');
   };
 
-  return (
-    <nav className="bg-app-surface-light/90 backdrop-blur-xl border-b border-app-border-light sticky top-0 z-50 theme-transition">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2">
-              <img src="/logo.jpg" alt="Smart Bite" className="h-10 w-auto rounded-full" />
-              <span className="text-2xl font-black text-secondary-900 tracking-tighter hidden sm:block">Smart Bite</span>
-            </Link>
-          </div>
+  const isActive = (path) => path === '/' ? normalizedPath === '/' : normalizedPath === path;
 
-          {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center space-x-10">
-            <Link to="/" className="text-secondary-600 font-bold hover:text-primary-500 transition-colors">Home</Link>
-            <Link to="/menu" className="text-secondary-600 font-bold hover:text-primary-500 transition-colors">Menu</Link>
-            {isAuthenticated && (
-              <Link to="/orders" className="text-secondary-600 font-bold hover:text-primary-500 transition-colors">Orders</Link>
-            )}
-            
-            <div className="relative group">
-              <input
-                type="text"
-                placeholder="Search cravings..."
-                className="bg-secondary-50 border border-app-border-light rounded-2xl py-2.5 px-5 pl-12 focus:ring-4 focus:ring-primary-500/10 focus:border-primary-300 w-64 text-secondary-900 theme-transition font-medium"
-              />
-              <Search className="absolute left-4 top-3 h-4 w-4 text-secondary-400 group-focus-within:text-primary-500 transition-colors" />
+  const navLinks = [
+    { to: '/', label: 'Home', icon: HomeIcon },
+    { to: '/menu', label: 'Menu', icon: LayoutGrid },
+    ...(isAuthenticated ? [
+      { to: '/orders', label: 'My Orders', icon: ClipboardList },
+      { to: '/favorites', label: 'Favorites', icon: Heart, badge: favorites.length },
+      { to: '/cart', label: 'Cart', icon: ShoppingCart, badge: totalQuantity },
+      { to: '/profile', label: 'Profile', icon: User },
+    ] : []),
+  ];
+
+  return (
+    <>
+      {/* ── Navbar ── */}
+      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-20">
+
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to="/" className="flex items-center gap-2">
+                <img src="/logo.jpg" alt="Smart Bite" className="h-10 w-auto rounded-full" />
+                <span className="text-2xl font-black text-gray-900 tracking-tighter hidden sm:block">Smart Bite</span>
+              </Link>
             </div>
 
-            <div className={`flex items-center space-x-4 ${isAuthPage ? '' : (isAuthenticated ? 'border-l border-app-border-light pl-8' : '')}`}>
-              {isAuthenticated && !isAuthPage && (
-                <>
-                  <Link to="/favorites" className="relative p-2.5 rounded-2xl bg-secondary-50 text-secondary-600 hover:bg-primary-500 hover:text-white transition-all">
-                    <Heart className="h-5 w-5" />
-                    {favorites.length > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 bg-primary-500 text-white text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
-                        {favorites.length}
-                      </span>
-                    )}
-                  </Link>
+            {/* Desktop Links */}
+            <div className="hidden lg:flex items-center space-x-10">
+              {[{ to: '/', label: 'Home' }, { to: '/menu', label: 'Menu' }, ...(isAuthenticated ? [{ to: '/orders', label: 'Orders' }] : [])].map(({ to, label }) => (
+                <Link key={to} to={to} className={`font-bold transition-colors ${isActive(to) ? 'text-primary-500' : 'text-gray-600 hover:text-primary-500'}`}>{label}</Link>
+              ))}
 
-                  <Link to="/cart" className="relative p-2.5 rounded-2xl bg-secondary-50 text-secondary-600 hover:bg-primary-500 hover:text-white transition-all">
-                    <ShoppingCart className="h-5 w-5" />
-                    {totalQuantity > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 bg-secondary-900 text-white text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
-                        {totalQuantity}
-                      </span>
-                    )}
-                  </Link>
-                </>
-              )}
+              <div className="relative group">
+                <input type="text" placeholder="Search cravings..." className="bg-gray-50 border border-gray-200 rounded-2xl py-2.5 px-5 pl-12 w-64 text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500/20" />
+                <Search className="absolute left-4 top-3 h-4 w-4 text-gray-400" />
+              </div>
 
-              {isAuthenticated ? (
-                <div className="relative group">
-                  <Link to="/profile" className="flex items-center space-x-3 p-1.5 pr-4 rounded-full bg-secondary-50 hover:bg-secondary-100 transition-all border border-app-border-light shadow-sm hover:shadow-md">
-                    <div className="w-9 h-9 rounded-full bg-primary-500 overflow-hidden border-2 border-white flex items-center justify-center">
-                      {user?.profilePhoto ? (
-                        <img src={getImageUrl(user.profilePhoto)} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-white font-black text-sm">
-                          {user?.firstName?.charAt(0) || user?.email?.charAt(0)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-start -space-y-0.5">
-                      <span className="text-[10px] font-black text-primary-500 uppercase tracking-widest">Profile</span>
-                      <span className="text-sm font-black text-secondary-900 truncate max-w-[100px]">
-                        {user?.firstName || user?.email?.split('@')[0]}
-                      </span>
-                    </div>
-                  </Link>
-                  
-                  {/* Dropdown Menu on Hover */}
-                  <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
-                    <div className="w-48 bg-app-surface-light rounded-2xl shadow-2xl border border-app-border-light overflow-hidden">
-                      <Link to="/profile" className="flex items-center space-x-3 px-5 py-4 hover:bg-secondary-50 text-secondary-700 transition-colors">
-                        <User className="w-4 h-4" />
-                        <span className="text-sm font-bold">My Profile</span>
-                      </Link>
-                      <Link to="/orders" className="flex items-center space-x-3 px-5 py-4 hover:bg-secondary-50 text-secondary-700 transition-colors border-t border-secondary-100">
-                        <ShoppingCart className="w-4 h-4" />
-                        <span className="text-sm font-bold">My Orders</span>
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-5 py-4 hover:bg-red-50 text-red-600 transition-colors border-t border-secondary-100"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span className="text-sm font-bold">Logout</span>
-                      </button>
+              <div className={`flex items-center space-x-4 ${isAuthenticated ? 'border-l border-gray-200 pl-8' : ''}`}>
+                {isAuthenticated && !isAuthPage && (
+                  <>
+                    <Link to="/favorites" className="relative p-2.5 rounded-2xl bg-gray-50 text-gray-600 hover:bg-primary-500 hover:text-white transition-all">
+                      <Heart className="h-5 w-5" />
+                      {favorites.length > 0 && <span className="absolute -top-1.5 -right-1.5 bg-primary-500 text-white text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">{favorites.length}</span>}
+                    </Link>
+                    <Link to="/cart" className="relative p-2.5 rounded-2xl bg-gray-50 text-gray-600 hover:bg-primary-500 hover:text-white transition-all">
+                      <ShoppingCart className="h-5 w-5" />
+                      {totalQuantity > 0 && <span className="absolute -top-1.5 -right-1.5 bg-gray-900 text-white text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">{totalQuantity}</span>}
+                    </Link>
+                  </>
+                )}
+                {isAuthenticated ? (
+                  <div className="relative group">
+                    <Link to="/profile" className="flex items-center space-x-3 p-1.5 pr-4 rounded-full bg-gray-50 hover:bg-gray-100 transition-all border border-gray-200 shadow-sm">
+                      <div className="w-9 h-9 rounded-full bg-primary-500 overflow-hidden border-2 border-white flex items-center justify-center">
+                        {user?.profilePhoto ? <img src={getImageUrl(user.profilePhoto)} alt="Profile" className="w-full h-full object-cover" /> : <span className="text-white font-black text-sm">{user?.firstName?.charAt(0) || user?.email?.charAt(0)}</span>}
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-[10px] font-black text-primary-500 uppercase tracking-widest">Profile</span>
+                        <span className="text-sm font-black text-gray-900 truncate max-w-[100px]">{user?.firstName || user?.email?.split('@')[0]}</span>
+                      </div>
+                    </Link>
+                    <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+                        <Link to="/profile" className="flex items-center space-x-3 px-5 py-4 hover:bg-gray-50 text-gray-700"><User className="w-4 h-4" /><span className="text-sm font-bold">My Profile</span></Link>
+                        <Link to="/orders" className="flex items-center space-x-3 px-5 py-4 hover:bg-gray-50 text-gray-700 border-t border-gray-100"><ClipboardList className="w-4 h-4" /><span className="text-sm font-bold">My Orders</span></Link>
+                        <button onClick={handleLogout} className="w-full flex items-center space-x-3 px-5 py-4 hover:bg-red-50 text-red-600 border-t border-gray-100"><LogOut className="w-4 h-4" /><span className="text-sm font-bold">Logout</span></button>
+                      </div>
                     </div>
                   </div>
+                ) : (
+                  <button onClick={() => navigate(guestCta.to)} className="btn-primary py-2.5 px-8 text-sm">{guestCta.label}</button>
+                )}
+              </div>
+            </div>
+
+            {/* Mobile Top-Right */}
+            <div className="lg:hidden flex items-center space-x-3">
+              {isAuthenticated && !isAuthPage && (
+                <Link to="/cart" className="relative p-2 rounded-xl bg-gray-50 text-gray-600">
+                  <ShoppingCart className="h-5 w-5" />
+                  {totalQuantity > 0 && <span className="absolute -top-1 -right-1 bg-gray-900 text-white text-[8px] font-black rounded-full h-4 w-4 flex items-center justify-center">{totalQuantity}</span>}
+                </Link>
+              )}
+              {!isAuthenticated && isAuthPage ? (
+                <button onClick={() => navigate(guestCta.to)} className="btn-primary py-2 px-6 text-[10px] uppercase font-black tracking-widest">{guestCta.label}</button>
+              ) : (
+                <button onClick={() => setIsOpen(true)} className="p-2 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-100 transition-all">
+                  <Menu className="h-6 w-6" />
+                </button>
+              )}
+            </div>
+
+          </div>
+        </div>
+      </nav>
+
+      {/* ── Mobile Drawer (rendered outside nav, at root level) ── */}
+      {isOpen && (
+        <div className="lg:hidden" style={{ position: 'fixed', inset: 0, zIndex: 9999 }}>
+          {/* Backdrop */}
+          <div
+            style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)' }}
+            onClick={() => setIsOpen(false)}
+          />
+
+          {/* Panel */}
+          <div style={{
+            position: 'absolute', top: 0, right: 0, height: '100%',
+            width: '80%', maxWidth: '320px',
+            backgroundColor: '#ffffff',
+            display: 'flex', flexDirection: 'column',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+            zIndex: 10000,
+          }}>
+            {/* Header */}
+            <div style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #f3f4f6', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img src="/logo.jpg" alt="Smart Bite" style={{ height: '36px', borderRadius: '50%' }} />
+                <span style={{ fontSize: '18px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px' }}>Smart Bite</span>
+              </div>
+              <button onClick={() => setIsOpen(false)} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#f3f4f6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <X size={20} color="#374151" />
+              </button>
+            </div>
+
+            {/* Nav Links */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '16px', backgroundColor: '#ffffff' }}>
+              <p style={{ fontSize: '9px', fontWeight: 900, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '3px', padding: '0 12px', marginBottom: '8px' }}>Navigation</p>
+
+              {navLinks.map(({ to, label, icon: Icon, badge }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setIsOpen(false)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    padding: '12px', borderRadius: '16px', marginBottom: '4px',
+                    textDecoration: 'none', fontWeight: 700, fontSize: '14px',
+                    backgroundColor: isActive(to) ? 'rgba(22,163,74,0.08)' : 'transparent',
+                    color: isActive(to) ? '#15803d' : '#374151',
+                  }}
+                >
+                  <div style={{ padding: '8px', borderRadius: '10px', backgroundColor: isActive(to) ? 'rgba(22,163,74,0.12)' : '#f3f4f6', display: 'flex' }}>
+                    <Icon size={18} color={isActive(to) ? '#15803d' : '#6b7280'} />
+                  </div>
+                  <span style={{ flex: 1 }}>{label}</span>
+                  {badge > 0 && (
+                    <span style={{ backgroundColor: '#f97316', color: '#fff', fontSize: '9px', fontWeight: 900, borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{badge}</span>
+                  )}
+                </Link>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div style={{ padding: '16px', borderTop: '1px solid #f3f4f6', backgroundColor: '#f9fafb', flexShrink: 0 }}>
+              {isAuthenticated ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <Link to="/profile" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #f3f4f6', textDecoration: 'none', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+                    <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: '#f97316', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                      {user?.profilePhoto
+                        ? <img src={getImageUrl(user.profilePhoto)} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ color: '#fff', fontWeight: 900, fontSize: '16px' }}>{user?.firstName?.charAt(0) || user?.email?.charAt(0)}</span>
+                      }
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: '14px', fontWeight: 900, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.firstName} {user?.lastName}</p>
+                      <p style={{ fontSize: '11px', color: '#6b7280', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email}</p>
+                    </div>
+                  </Link>
+                  <button onClick={handleLogout} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px', borderRadius: '16px', backgroundColor: '#fef2f2', color: '#dc2626', fontWeight: 900, fontSize: '14px', border: 'none', cursor: 'pointer' }}>
+                    <LogOut size={18} />
+                    <span>Logout</span>
+                  </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => navigate(guestCta.to)}
-                  className="btn-primary py-2.5 px-8 text-sm"
-                >
-                  {guestCta.label}
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="lg:hidden flex items-center space-x-4">
-            {isAuthenticated && !isAuthPage && (
-              <Link to="/cart" className="relative p-2 rounded-xl bg-secondary-50 text-secondary-600">
-                <ShoppingCart className="h-5 w-5" />
-                {totalQuantity > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-secondary-900 text-white text-[8px] font-black rounded-full h-4 w-4 flex items-center justify-center">
-                    {totalQuantity}
-                  </span>
-                )}
-              </Link>
-            )}
-            
-            {!isAuthenticated && isAuthPage ? (
-              <button
-                onClick={() => navigate(guestCta.to)}
-                className="btn-primary py-2 px-6 text-[10px] uppercase font-black tracking-widest"
-              >
-                {guestCta.label}
-              </button>
-            ) : (
-              <button 
-                onClick={() => setIsOpen(!isOpen)} 
-                className="p-2 rounded-xl bg-secondary-50 text-secondary-700 hover:bg-secondary-100 transition-all"
-              >
-                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div className={`lg:hidden fixed inset-0 z-[60] transition-all duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-        {/* Backdrop */}
-        <div className="absolute inset-0 bg-secondary-900/60 backdrop-blur-sm" onClick={() => setIsOpen(false)}></div>
-        
-        {/* Menu Content */}
-        <div className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl transition-transform duration-300 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
-          <div className="p-6 flex justify-between items-center border-b border-secondary-50">
-            <div className="flex items-center gap-3">
-              <img src="/logo.jpg" alt="Smart Bite" className="h-8 w-auto rounded-full" />
-              <span className="text-xl font-black text-secondary-900 tracking-tighter">Smart Bite</span>
-            </div>
-            <button onClick={() => setIsOpen(false)} className="p-2 rounded-xl bg-secondary-50 text-secondary-700">
-              <X className="h-6 w-6" />
-            </button>
-          </div>
-
-          <div className="flex-grow overflow-y-auto p-6">
-            <div className="space-y-1">
-              <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-secondary-50 text-secondary-700 font-bold transition-all">
-                <div className="p-2 rounded-lg bg-secondary-100"><HomeIcon size={18} /></div>
-                <span>Home</span>
-              </Link>
-              <Link to="/menu" onClick={() => setIsOpen(false)} className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-secondary-50 text-secondary-700 font-bold transition-all">
-                <div className="p-2 rounded-lg bg-secondary-100"><LayoutGrid size={18} /></div>
-                <span>Menu</span>
-              </Link>
-              {isAuthenticated && (
-                <Link to="/orders" onClick={() => setIsOpen(false)} className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-secondary-50 text-secondary-700 font-bold transition-all">
-                  <div className="p-2 rounded-lg bg-secondary-100"><ClipboardList size={18} /></div>
-                  <span>My Orders</span>
-                </Link>
-              )}
-              {isAuthenticated && (
-                <Link to="/favorites" onClick={() => setIsOpen(false)} className="flex items-center space-x-4 p-4 rounded-2xl hover:bg-secondary-50 text-secondary-700 font-bold transition-all">
-                  <div className="p-2 rounded-lg bg-secondary-100"><Heart size={18} /></div>
-                  <span>Favorites</span>
-                </Link>
-              )}
-              
-              <div className="pt-4 px-2">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search cravings..."
-                    className="w-full bg-secondary-50 border border-secondary-100 rounded-2xl py-3.5 px-12 text-sm font-medium focus:ring-2 focus:ring-primary-500/20 outline-none"
-                  />
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-secondary-400" />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <Link to="/login" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px', borderRadius: '16px', backgroundColor: '#f3f4f6', color: '#111827', fontWeight: 900, fontSize: '14px', textDecoration: 'none' }}>Login</Link>
+                  <Link to="/signup" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px', borderRadius: '16px', backgroundColor: '#f97316', color: '#fff', fontWeight: 900, fontSize: '14px', textDecoration: 'none' }}>Sign Up</Link>
                 </div>
-              </div>
+              )}
             </div>
           </div>
-
-          <div className="p-6 border-t border-secondary-100 bg-slate-50/50">
-            {isAuthenticated ? (
-              <div className="space-y-4">
-                <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center space-x-4 p-3 rounded-2xl bg-white border border-secondary-100 shadow-sm">
-                  <div className="w-12 h-12 rounded-full bg-primary-500 overflow-hidden flex items-center justify-center border-2 border-white shadow-sm">
-                    {user?.profilePhoto ? (
-                      <img src={getImageUrl(user.profilePhoto)} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-white font-black">{user?.firstName?.charAt(0)}</span>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm font-black text-secondary-900">{user?.firstName}</p>
-                    <p className="text-[10px] text-secondary-500 font-bold uppercase tracking-widest">{user?.role}</p>
-                  </div>
-                </Link>
-                <button 
-                  onClick={() => { handleLogout(); setIsOpen(false); }}
-                  className="w-full flex items-center justify-center space-x-3 py-4 rounded-2xl bg-red-50 text-red-600 font-black text-sm transition-all active:scale-95"
-                >
-                  <LogOut size={20} /> <span>Logout System</span>
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-4">
-                <Link to="/login" onClick={() => setIsOpen(false)} className="flex items-center justify-center py-4 rounded-2xl bg-secondary-100 text-secondary-900 font-black text-sm">Login</Link>
-                <Link to="/signup" onClick={() => setIsOpen(false)} className="flex items-center justify-center py-4 rounded-2xl bg-primary-500 text-white font-black text-sm shadow-lg shadow-primary-500/20">Sign Up</Link>
-              </div>
-            )}
-          </div>
         </div>
-      </div>
-    </nav>
+      )}
+    </>
   );
 };
 

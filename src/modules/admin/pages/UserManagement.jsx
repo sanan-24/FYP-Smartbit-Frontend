@@ -97,7 +97,7 @@ const UserManagement = () => {
         </div>
 
         <div className="overflow-x-auto no-scrollbar md:custom-scrollbar">
-          <div className="min-w-[900px] p-4 md:p-6">
+          <div className="min-w-[900px] p-4 md:p-6 hidden md:block">
             {/* Table Header */}
             <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400">
               <div className="col-span-4">User Details</div>
@@ -170,6 +170,50 @@ const UserManagement = () => {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden p-4 space-y-3">
+          {paginatedUsers.length > 0 ? paginatedUsers.map((user) => (
+            <div key={user._id} className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center space-x-3 min-w-0">
+                  <div className="w-11 h-11 rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-500 font-black text-sm uppercase flex-shrink-0">
+                    {user.firstName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-secondary-900 dark:text-white text-sm truncate">{user.firstName} {user.lastName}</p>
+                    <p className="text-[10px] text-secondary-500 font-medium truncate">{user.email}</p>
+                  </div>
+                </div>
+                <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider flex-shrink-0 ${
+                  user.role === 'admin'
+                  ? 'bg-purple-100 text-purple-700'
+                  : user.role === 'rider'
+                  ? 'bg-orange-100 text-orange-700'
+                  : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {user.role}
+                </span>
+              </div>
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50 dark:border-secondary-800">
+                <p className="text-[9px] font-bold text-secondary-400 uppercase tracking-widest">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                <div className="flex gap-1.5">
+                  <button className="p-2 bg-secondary-100 dark:bg-secondary-800 rounded-lg text-secondary-400 hover:text-primary-500 hover:bg-primary-500/10 transition-all active:scale-90">
+                    <Edit2 className="h-3.5 w-3.5" />
+                  </button>
+                  <button onClick={() => handleDeleteUser(user._id)} className="p-2 bg-secondary-100 dark:bg-secondary-800 rounded-lg text-secondary-400 hover:text-red-500 hover:bg-red-500/10 transition-all active:scale-90">
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )) : (
+            <div className="py-16 text-center space-y-3 bg-slate-50/50 dark:bg-secondary-950/20 rounded-2xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
+              <UserCircle className="h-10 w-10 text-secondary-300 mx-auto" />
+              <p className="text-secondary-900 dark:text-white font-black">No users found</p>
+            </div>
+          )}
         </div>
 
         {/* Pagination Wrapper */}

@@ -187,50 +187,51 @@ const OrderManagement = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto no-scrollbar md:custom-scrollbar">
-          <div className="min-w-[1000px] p-4 md:p-6">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto no-scrollbar md:custom-scrollbar">
+          <div className="min-w-[1100px] p-4 md:p-6">
             {/* Table Header */}
-            <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400">
+            <div className="grid grid-cols-12 gap-3 px-4 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400">
               <div className="col-span-2">Order ID</div>
-              <div className="col-span-3">Customer</div>
+              <div className="col-span-2">Customer</div>
               <div className="col-span-2 text-center">Status</div>
-              <div className="col-span-2 text-center">Rider</div>
+              <div className="col-span-3 text-center">Rider</div>
               <div className="col-span-2 text-center">Total</div>
               <div className="col-span-1 text-right">Actions</div>
             </div>
 
             {/* Table Body */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               {paginatedOrders.length > 0 ? paginatedOrders.map((order, index) => (
                 <div 
                   key={order._id} 
-                  className={`grid grid-cols-12 gap-4 items-center px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
+                  className={`grid grid-cols-12 gap-3 items-center px-4 py-3.5 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
                     index % 2 === 0 
                     ? 'bg-white dark:bg-secondary-900' 
                     : 'bg-gray-50/50 dark:bg-secondary-800/30'
                   } hover:border-primary-500/20`}
                 >
                   <div className="col-span-2">
-                    <span className="font-black text-primary-500 text-sm md:text-base">#{order._id.slice(-6).toUpperCase()}</span>
+                    <span className="font-black text-primary-500 text-xs">#{order._id.slice(-6).toUpperCase()}</span>
                   </div>
                   
-                  <div className="col-span-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-500 font-black text-xs md:text-sm uppercase">
+                  <div className="col-span-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center text-primary-500 font-black text-xs uppercase flex-shrink-0">
                         {order.firstName?.charAt(0) || order.user?.firstName?.charAt(0) || 'U'}
                       </div>
                       <div className="flex flex-col min-w-0">
-                        <span className="font-bold text-secondary-900 dark:text-white text-xs md:text-sm truncate">{order.firstName} {order.lastName}</span>
-                        <span className="text-[10px] text-secondary-500 font-medium truncate">{order.phoneNumber}</span>
+                        <span className="font-bold text-secondary-900 dark:text-white text-xs truncate">{order.firstName} {order.lastName}</span>
+                        <span className="text-[9px] text-secondary-500 font-medium truncate">{order.phoneNumber}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="col-span-2 text-center">
+                  <div className="col-span-2 flex justify-center">
                     <select 
                       value={order.status}
                       onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                      className={`mx-auto px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[9px] md:text-xs font-black uppercase tracking-wider border-none focus:ring-0 cursor-pointer shadow-sm transition-all hover:scale-105 ${getStatusStyle(order.status)}`}
+                      className={`w-full max-w-[130px] px-2 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider border-none focus:ring-0 cursor-pointer shadow-sm ${getStatusStyle(order.status)}`}
                     >
                       <option value="pending">Pending</option>
                       <option value="confirmed">Confirmed</option>
@@ -241,43 +242,45 @@ const OrderManagement = () => {
                     </select>
                   </div>
 
-                  <div className="col-span-2 text-center">
+                  <div className="col-span-3 flex justify-center">
                     {order.status === 'delivered' || order.status === 'cancelled' ? (
-                      <span className="text-xs md:text-sm font-bold text-secondary-500 bg-secondary-100 dark:bg-secondary-800 px-3 py-1 rounded-lg">
+                      <span className="text-xs font-bold text-secondary-500 bg-secondary-100 dark:bg-secondary-800 px-3 py-1 rounded-lg">
                         {order.rider?.firstName || 'None'}
                       </span>
                     ) : (
-                      <RiderDropdown 
-                        riders={riders}
-                        selectedRiderId={order.rider?._id}
-                        onAssign={(riderId) => handleRiderAssign(order._id, riderId)}
-                        loading={loading}
-                      />
+                      <div className="w-full">
+                        <RiderDropdown 
+                          riders={riders}
+                          selectedRiderId={order.rider?._id}
+                          onAssign={(riderId) => handleRiderAssign(order._id, riderId)}
+                          loading={loading}
+                        />
+                      </div>
                     )}
                   </div>
 
                   <div className="col-span-2 text-center">
                     <div className="flex flex-col items-center">
-                      <span className="font-black text-secondary-900 dark:text-white text-sm md:text-base">Rs. {order.totalAmount || order.total || 0}</span>
-                      <span className="text-[9px] md:text-[10px] text-secondary-400 font-bold uppercase tracking-tighter">{new Date(order.createdAt).toLocaleDateString()}</span>
+                      <span className="font-black text-secondary-900 dark:text-white text-xs">Rs. {order.totalAmount || order.total || 0}</span>
+                      <span className="text-[9px] text-secondary-400 font-bold">{new Date(order.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
 
-                  <div className="col-span-1 text-right flex justify-end space-x-1.5 md:space-x-2">
+                  <div className="col-span-1 flex justify-end gap-1">
                     <button 
                       onClick={() => handleViewDetails(order)}
-                      className="p-2 md:p-2.5 bg-secondary-100 dark:bg-secondary-800 rounded-lg md:rounded-xl text-secondary-400 hover:text-primary-500 hover:bg-primary-500/10 transition-all shadow-sm active:scale-90"
+                      className="p-2 bg-secondary-100 dark:bg-secondary-800 rounded-lg text-secondary-400 hover:text-primary-500 hover:bg-primary-500/10 transition-all shadow-sm active:scale-90"
                       title="View Details"
                     >
-                      <Eye className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                      <Eye className="h-3.5 w-3.5" />
                     </button>
                     {order.status === 'out-for-delivery' && order.rider && (
                       <button 
                         onClick={() => handleTrackRider(order)}
-                        className="p-2 md:p-2.5 bg-secondary-100 dark:bg-secondary-800 rounded-lg md:rounded-xl text-secondary-400 hover:text-green-500 hover:bg-green-500/10 transition-all shadow-sm active:scale-90"
+                        className="p-2 bg-secondary-100 dark:bg-secondary-800 rounded-lg text-secondary-400 hover:text-green-500 hover:bg-green-500/10 transition-all shadow-sm active:scale-90"
                         title="Live Track"
                       >
-                        <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                        <MapPin className="h-3.5 w-3.5" />
                       </button>
                     )}
                   </div>
@@ -295,6 +298,88 @@ const OrderManagement = () => {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden p-4 space-y-4">
+          {paginatedOrders.length > 0 ? paginatedOrders.map((order) => (
+            <div key={order._id} className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 shadow-md overflow-hidden">
+              {/* Card Header */}
+              <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-secondary-800/50 border-b border-secondary-100 dark:border-secondary-800">
+                <span className="font-black text-primary-500 text-sm">#{order._id.slice(-6).toUpperCase()}</span>
+                <select
+                  value={order.status}
+                  onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                  className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border-none focus:ring-0 cursor-pointer shadow-sm ${getStatusStyle(order.status)}`}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="cooking">Cooking</option>
+                  <option value="out-for-delivery">Out for Delivery</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-500 font-black text-sm uppercase">
+                      {order.firstName?.charAt(0) || 'U'}
+                    </div>
+                    <div>
+                      <p className="font-bold text-secondary-900 dark:text-white text-sm">{order.firstName} {order.lastName}</p>
+                      <p className="text-[10px] text-secondary-500 font-medium">{order.phoneNumber}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-black text-secondary-900 dark:text-white text-sm">Rs. {order.totalAmount || order.total || 0}</p>
+                    <p className="text-[9px] text-secondary-400 font-bold">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+
+                {/* Rider Assignment */}
+                {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                  <div className="pt-1">
+                    <p className="text-[9px] font-black text-secondary-400 uppercase tracking-widest mb-1.5">Assign Rider</p>
+                    <RiderDropdown
+                      riders={riders}
+                      selectedRiderId={order.rider?._id}
+                      onAssign={(riderId) => handleRiderAssign(order._id, riderId)}
+                      loading={loading}
+                    />
+                  </div>
+                )}
+                {(order.status === 'delivered' || order.status === 'cancelled') && order.rider?.firstName && (
+                  <p className="text-[10px] text-secondary-500 font-bold">Rider: {order.rider.firstName}</p>
+                )}
+
+                {/* Actions */}
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    onClick={() => handleViewDetails(order)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-secondary-100 dark:bg-secondary-800 rounded-xl text-secondary-600 dark:text-secondary-300 text-xs font-bold hover:bg-primary-500/10 hover:text-primary-500 transition-all"
+                  >
+                    <Eye className="h-4 w-4" /> Details
+                  </button>
+                  {order.status === 'out-for-delivery' && order.rider && (
+                    <button
+                      onClick={() => handleTrackRider(order)}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-50 dark:bg-green-900/20 rounded-xl text-green-600 text-xs font-bold hover:bg-green-100 transition-all"
+                    >
+                      <MapPin className="h-4 w-4" /> Track
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )) : (
+            <div className="py-16 text-center space-y-4 bg-slate-50/50 dark:bg-secondary-950/20 rounded-2xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
+              <Filter className="h-10 w-10 text-secondary-300 mx-auto" />
+              <p className="text-secondary-900 dark:text-white font-black">No orders found</p>
+            </div>
+          )}
         </div>
 
         {/* Pagination Wrapper */}

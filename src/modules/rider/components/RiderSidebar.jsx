@@ -30,7 +30,7 @@ const RiderSidebar = ({ isOpen, onClose }) => {
         onClick={onClose}
       ></div>
 
-      <aside className={`fixed lg:sticky top-0 left-0 w-64 md:w-72 bg-secondary-950 text-white h-screen flex flex-col shadow-2xl z-[70] border-r border-white/5 transition-transform duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`fixed lg:sticky top-0 left-0 w-64 md:w-72 bg-secondary-950 text-white h-screen flex flex-col shadow-2xl z-[70] border-r border-white/5 transition-transform duration-300 transform flex-shrink-0 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-6 md:p-8 border-b border-white/5 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <img src="/logo.jpg" alt="Smart Bite" className="h-8 md:h-10 w-auto rounded-full" />

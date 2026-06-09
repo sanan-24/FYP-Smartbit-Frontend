@@ -18,6 +18,7 @@ import {
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import ConfirmModal from '../../../components/ConfirmModal';
+import Pagination from '../../../components/Pagination';
 import { fetchCategories as fetchGlobalCategories, addProduct, fetchProducts, updateProduct, deleteProduct } from '../../../features/productSlice';
 import { addCategory, updateCategory, deleteCategory } from '../redux/adminSlice';
 
@@ -58,6 +59,8 @@ const MenuManagement = () => {
 
   const activeCategory = 'All';
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   const filteredItems = menuItems.filter(item => {
     const itemName = item.name.toLowerCase();
@@ -70,6 +73,11 @@ const MenuManagement = () => {
     
     return matchesSearch && matchesCategory;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   const loading = productLoading;
 
@@ -149,6 +157,11 @@ const MenuManagement = () => {
      dispatch(fetchGlobalCategories());
      dispatch(fetchProducts());
    }, [dispatch]);
+
+   // Reset page when search changes
+   useEffect(() => {
+     setCurrentPage(1);
+   }, [searchTerm]);
  
    const handleProductInputChange = (e) => {
      const { name, value } = e.target;
@@ -266,18 +279,18 @@ const MenuManagement = () => {
 
       {/* Product Modal */}
       {showProductModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md">
-          <div className="bg-white dark:bg-secondary-900 rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl border border-secondary-100 dark:border-secondary-800 animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-md">
+          <div className="bg-white dark:bg-secondary-900 rounded-t-[2rem] sm:rounded-[2.5rem] w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] flex flex-col shadow-2xl border border-secondary-100 dark:border-secondary-800 animate-in fade-in slide-in-from-bottom-4 sm:zoom-in duration-200">
             {/* Modal Header - Fixed */}
-            <div className="flex justify-between items-center p-10 pb-5 shrink-0">
-              <h2 className="text-3xl font-black dark:text-white">{isEditingProduct ? 'Update Product' : 'Add New Product'}</h2>
+            <div className="flex justify-between items-center p-5 sm:p-10 sm:pb-5 shrink-0 border-b border-secondary-100 dark:border-secondary-800">
+              <h2 className="text-xl sm:text-3xl font-black dark:text-white">{isEditingProduct ? 'Update Product' : 'Add New Product'}</h2>
               <button onClick={closeProductModal} className="p-2 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-full transition-colors">
-                <X className="w-6 h-6 dark:text-white" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6 dark:text-white" />
               </button>
             </div>
 
             {/* Scrollable Form Content */}
-            <div className="flex-grow overflow-y-auto px-10 py-5 custom-scrollbar">
+            <div className="flex-grow overflow-y-auto px-5 sm:px-10 py-5 custom-scrollbar">
               <form id="productForm" onSubmit={handleAddProduct} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
@@ -415,9 +428,9 @@ const MenuManagement = () => {
             </div>
 
             {/* Modal Footer - Fixed */}
-            <div className="p-10 pt-5 shrink-0 border-t border-secondary-100 dark:border-secondary-800">
-              <Button form="productForm" type="submit" loading={productLoading} className="w-full py-5 text-xl">
-                {isEditingProduct ? 'Update Product' : 'Add Product'} <ArrowRight className="ml-3 w-6 h-6" />
+            <div className="p-5 sm:p-10 sm:pt-5 shrink-0 border-t border-secondary-100 dark:border-secondary-800">
+              <Button form="productForm" type="submit" loading={productLoading} className="w-full py-4 sm:py-5 text-base sm:text-xl">
+                {isEditingProduct ? 'Update Product' : 'Add Product'} <ArrowRight className="ml-3 w-5 h-5 sm:w-6 sm:h-6" />
               </Button>
             </div>
           </div>
@@ -426,12 +439,12 @@ const MenuManagement = () => {
 
       {/* Category Modal */}
       {showCategoryModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-secondary-900 rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl border border-secondary-100 dark:border-secondary-800">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-3xl font-black dark:text-white">Categories</h2>
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-secondary-900 rounded-t-[2rem] sm:rounded-[2.5rem] w-full sm:max-w-md p-6 sm:p-10 shadow-2xl border border-secondary-100 dark:border-secondary-800 max-h-[90vh] overflow-y-auto animate-in fade-in slide-in-from-bottom-4 sm:zoom-in duration-200">
+            <div className="flex justify-between items-center mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl font-black dark:text-white">Categories</h2>
               <button onClick={() => setShowCategoryModal(false)} className="p-2 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-full transition-colors">
-                <X className="w-6 h-6 dark:text-white" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6 dark:text-white" />
               </button>
             </div>
 
@@ -522,95 +535,140 @@ const MenuManagement = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto no-scrollbar md:custom-scrollbar">
-          <div className="min-w-[800px] p-4 md:p-6">
-            {/* Table Header */}
-            <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400">
-              <div className="col-span-5">Product Details</div>
-              <div className="col-span-2 text-center">Price</div>
-              <div className="col-span-2 text-center">Status</div>
-              <div className="col-span-3 text-right">Actions</div>
-            </div>
-
-            {/* Table Body */}
-            <div className="space-y-3 mt-2">
-              {loading && menuItems.length === 0 ? (
-                <div className="py-20 text-center">
-                  <Loader2 className="h-10 w-10 md:h-12 md:w-12 text-primary-500 animate-spin mx-auto" />
-                  <p className="mt-4 text-secondary-500 font-bold text-sm md:text-base">Loading menu items...</p>
+        {loading && menuItems.length === 0 ? (
+          <div className="py-20 text-center">
+            <Loader2 className="h-10 w-10 md:h-12 md:w-12 text-primary-500 animate-spin mx-auto" />
+            <p className="mt-4 text-secondary-500 font-bold text-sm md:text-base">Loading menu items...</p>
+          </div>
+        ) : (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto no-scrollbar md:custom-scrollbar">
+              <div className="min-w-[800px] p-4 md:p-6">
+                {/* Table Header */}
+                <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400">
+                  <div className="col-span-5">Product Details</div>
+                  <div className="col-span-2 text-center">Price</div>
+                  <div className="col-span-2 text-center">Status</div>
+                  <div className="col-span-3 text-right">Actions</div>
                 </div>
-              ) : filteredItems.length > 0 ? (
-                filteredItems.map((item, index) => (
-                  <div 
-                    key={item._id} 
-                    className={`grid grid-cols-12 gap-4 items-center px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
-                      index % 2 === 0 
-                      ? 'bg-white dark:bg-secondary-900' 
-                      : 'bg-gray-50/50 dark:bg-secondary-800/30'
-                    } hover:border-primary-500/20`}
-                  >
-                    <div className="col-span-5">
-                      <div className="flex items-center space-x-3 md:space-x-4">
-                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-secondary-100 dark:bg-secondary-800 overflow-hidden shadow-inner">
-                          {item.image ? (
-                            <img src={getImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover" />
+
+                {/* Table Body */}
+                <div className="space-y-3 mt-2">
+                  {filteredItems.length > 0 ? (
+                    paginatedItems.map((item, index) => (
+                      <div
+                        key={item._id}
+                        className={`grid grid-cols-12 gap-4 items-center px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
+                          index % 2 === 0
+                          ? 'bg-white dark:bg-secondary-900'
+                          : 'bg-gray-50/50 dark:bg-secondary-800/30'
+                        } hover:border-primary-500/20`}
+                      >
+                        <div className="col-span-5">
+                          <div className="flex items-center space-x-3 md:space-x-4">
+                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-secondary-100 dark:bg-secondary-800 overflow-hidden shadow-inner flex-shrink-0">
+                              {item.image ? (
+                                <img src={getImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-secondary-300 italic text-[8px] md:text-[10px]">No Pic</div>
+                              )}
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                              <span className="font-bold dark:text-white text-xs md:text-base leading-tight truncate">{item.name}</span>
+                              <span className="text-[9px] md:text-xs font-bold text-primary-500 uppercase tracking-widest mt-0.5 truncate">{item.category?.name || 'Uncategorized'}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-span-2 text-center">
+                          <span className="font-bold text-secondary-900 dark:text-white text-xs md:text-base whitespace-nowrap">Rs. {item.price}</span>
+                        </div>
+                        <div className="col-span-2 text-center">
+                          {item.isAvailable ? (
+                            <span className="mx-auto px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[9px] md:text-xs font-black uppercase tracking-wider bg-green-100 text-green-700 flex items-center justify-center w-fit shadow-sm">Available</span>
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-secondary-300 italic text-[8px] md:text-[10px]">No Pic</div>
+                            <span className="mx-auto px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[9px] md:text-xs font-black uppercase tracking-wider bg-red-100 text-red-700 flex items-center justify-center w-fit shadow-sm">Sold Out</span>
                           )}
                         </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="font-bold dark:text-white text-xs md:text-base leading-tight truncate">{item.name}</span>
-                          <span className="text-[9px] md:text-xs font-bold text-primary-500 uppercase tracking-widest mt-0.5 truncate">{item.category?.name || 'Uncategorized'}</span>
+                        <div className="col-span-3 text-right flex justify-end space-x-1.5 md:space-x-2">
+                          <button onClick={() => handleEdit(item)} className="p-2 md:p-3 bg-secondary-100 dark:bg-secondary-800 rounded-lg md:rounded-xl text-secondary-400 hover:text-primary-500 hover:bg-primary-500/10 transition-all shadow-sm active:scale-90">
+                            <Edit2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                          </button>
+                          <button onClick={() => handleDelete(item._id)} className="p-2 md:p-3 bg-secondary-100 dark:bg-secondary-800 rounded-lg md:rounded-xl text-secondary-400 hover:text-red-500 hover:bg-red-500/10 transition-all shadow-sm active:scale-90">
+                            <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                          </button>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="py-16 md:py-24 text-center space-y-4 md:space-y-6 bg-slate-50/50 dark:bg-secondary-950/20 rounded-3xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
+                      <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-secondary-900 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center mx-auto shadow-sm">
+                        <Search className="h-8 w-8 md:h-10 md:w-10 text-secondary-300" />
+                      </div>
+                      <div className="max-w-xs mx-auto">
+                        <p className="text-secondary-900 dark:text-white font-black text-lg md:text-xl">No items found</p>
+                        <p className="text-xs text-secondary-500 font-bold mt-2 uppercase tracking-widest leading-relaxed">Try adjusting your search or category</p>
+                      </div>
                     </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
-                    <div className="col-span-2 text-center">
-                      <span className="font-bold text-secondary-900 dark:text-white text-xs md:text-base whitespace-nowrap">Rs. {item.price}</span>
-                    </div>
-
-                    <div className="col-span-2 text-center">
-                      {item.isAvailable ? (
-                        <span className="mx-auto px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[9px] md:text-xs font-black uppercase tracking-wider bg-green-100 text-green-700 flex items-center justify-center w-fit shadow-sm">
-                          Available
-                        </span>
+            {/* Mobile Card View */}
+            <div className="md:hidden p-4 space-y-3">
+              {filteredItems.length > 0 ? (
+                paginatedItems.map((item) => (
+                  <div key={item._id} className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-secondary-100 dark:bg-secondary-800 overflow-hidden flex-shrink-0 shadow-inner">
+                      {item.image ? (
+                        <img src={getImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover" />
                       ) : (
-                        <span className="mx-auto px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[9px] md:text-xs font-black uppercase tracking-wider bg-red-100 text-red-700 flex items-center justify-center w-fit shadow-sm">
-                          Sold Out
-                        </span>
+                        <div className="w-full h-full flex items-center justify-center text-secondary-300 text-[9px] italic">No Pic</div>
                       )}
                     </div>
-
-                    <div className="col-span-3 text-right flex justify-end space-x-1.5 md:space-x-2">
-                      <button 
-                        onClick={() => handleEdit(item)}
-                        className="p-2 md:p-3 bg-secondary-100 dark:bg-secondary-800 rounded-lg md:rounded-xl text-secondary-400 hover:text-primary-500 hover:bg-primary-500/10 transition-all shadow-sm active:scale-90"
-                      >
-                        <Edit2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-black dark:text-white text-sm truncate">{item.name}</p>
+                      <p className="text-[10px] font-bold text-primary-500 uppercase tracking-widest truncate">{item.category?.name || 'Uncategorized'}</p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="font-black text-secondary-900 dark:text-white text-xs">Rs. {item.price}</span>
+                        {item.isAvailable ? (
+                          <span className="px-2 py-0.5 rounded-full text-[8px] font-black uppercase bg-green-100 text-green-700">Available</span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[8px] font-black uppercase bg-red-100 text-red-700">Sold Out</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                      <button onClick={() => handleEdit(item)} className="p-2.5 bg-primary-500/10 rounded-xl text-primary-500 hover:bg-primary-500 hover:text-white transition-all active:scale-90">
+                        <Edit2 className="h-4 w-4" />
                       </button>
-                      <button 
-                        onClick={() => handleDelete(item._id)}
-                        className="p-2 md:p-3 bg-secondary-100 dark:bg-secondary-800 rounded-lg md:rounded-xl text-secondary-400 hover:text-red-500 hover:bg-red-500/10 transition-all shadow-sm active:scale-90"
-                      >
-                        <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                      <button onClick={() => handleDelete(item._id)} className="p-2.5 bg-red-50 dark:bg-red-900/20 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-90">
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="py-16 md:py-24 text-center space-y-4 md:space-y-6 bg-slate-50/50 dark:bg-secondary-950/20 rounded-3xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-secondary-900 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center mx-auto shadow-sm">
-                    <Search className="h-8 w-8 md:h-10 md:w-10 text-secondary-300" />
-                  </div>
-                  <div className="max-w-xs mx-auto">
-                    <p className="text-secondary-900 dark:text-white font-black text-lg md:text-xl">No items found</p>
-                    <p className="text-xs text-secondary-500 font-bold mt-2 uppercase tracking-widest leading-relaxed">Try adjusting your search or category</p>
-                  </div>
+                <div className="py-16 text-center space-y-3 bg-slate-50/50 dark:bg-secondary-950/20 rounded-2xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
+                  <Search className="h-10 w-10 text-secondary-300 mx-auto" />
+                  <p className="text-secondary-900 dark:text-white font-black">No items found</p>
                 </div>
               )}
             </div>
+          </>
+        )}
+
+        {/* Pagination */}
+        {!loading && filteredItems.length > 0 && (
+          <div className="border-t border-secondary-100 dark:border-secondary-800 bg-slate-50/30 dark:bg-secondary-950/20">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
-        </div>
+        )}
       </div>
 
       <ConfirmModal

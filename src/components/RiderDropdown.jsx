@@ -18,7 +18,7 @@ const RiderDropdown = ({ riders, selectedRiderId, onAssign, loading }) => {
     }, []);
 
     return (
-        <div className="relative inline-block w-44 text-left" ref={dropdownRef}>
+        <div className="relative w-full text-left" ref={dropdownRef}>
             <button
                 type="button"
                 onClick={() => !loading && setIsOpen(!isOpen)}

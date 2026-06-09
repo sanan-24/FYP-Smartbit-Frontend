@@ -48,19 +48,19 @@ const mockData = {
 };
 
 const StatCard = ({ title, value, icon: Icon, trend, trendValue }) => (
-  <div className="bg-white dark:bg-app-surface-dark p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-soft border border-slate-100 dark:border-slate-800 theme-transition hover:shadow-premium group">
+  <div className="bg-white dark:bg-app-surface-dark p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-soft border border-slate-100 dark:border-slate-800 theme-transition hover:shadow-premium group">
     <div className="flex justify-between items-start">
-      <div className="bg-primary-50 dark:bg-primary-900/20 p-3 md:p-4 rounded-xl md:rounded-2xl group-hover:scale-110 transition-transform">
-        <Icon className="h-5 w-5 md:h-7 md:w-7 text-primary-500" />
+      <div className="bg-primary-50 dark:bg-primary-900/20 p-2.5 md:p-4 rounded-xl md:rounded-2xl group-hover:scale-110 transition-transform flex-shrink-0">
+        <Icon className="h-4 w-4 md:h-7 md:w-7 text-primary-500" />
       </div>
-      <div className={`flex items-center px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest ${trend === 'up' ? 'bg-green-50 text-green-600 dark:bg-green-900/20' : 'bg-red-50 text-red-600 dark:bg-red-900/20'}`}>
-        {trend === 'up' ? <ArrowUpRight className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" /> : <ArrowDownRight className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />}
+      <div className={`flex items-center px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[7px] md:text-[10px] font-black uppercase tracking-widest flex-shrink-0 ${trend === 'up' ? 'bg-green-50 text-green-600 dark:bg-green-900/20' : 'bg-red-50 text-red-600 dark:bg-red-900/20'}`}>
+        {trend === 'up' ? <ArrowUpRight className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5" /> : <ArrowDownRight className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5" />}
         {trendValue}
       </div>
     </div>
-    <div className="mt-4 md:mt-8">
-      <p className="text-[9px] md:text-xs text-secondary-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em]">{title}</p>
-      <h3 className="text-xl md:text-3xl font-black mt-1 md:mt-2 dark:text-white tracking-tight">{value}</h3>
+    <div className="mt-3 md:mt-8">
+      <p className="text-[8px] md:text-xs text-secondary-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] truncate">{title}</p>
+      <h3 className="text-base md:text-3xl font-black mt-1 md:mt-2 dark:text-white tracking-tight break-words leading-tight">{value}</h3>
     </div>
   </div>
 );
@@ -127,13 +127,13 @@ const Dashboard = () => {
   return (
     <div className="space-y-6 md:space-y-12">
       <div className="print:hidden space-y-6 md:space-y-12">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 md:gap-6">
           <div className="space-y-1 md:space-y-2">
-            <h1 className="text-3xl md:text-5xl font-black dark:text-white tracking-tighter">Insights</h1>
-            <p className="text-secondary-500 dark:text-secondary-400 text-sm md:text-lg font-medium">Real-time performance analytics of Smart Bite.</p>
+            <h1 className="text-2xl md:text-5xl font-black dark:text-white tracking-tighter">Insights</h1>
+            <p className="text-secondary-500 dark:text-secondary-400 text-xs md:text-lg font-medium">Real-time performance analytics of Smart Bite.</p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full lg:w-auto">
+          <div className="flex flex-col sm:flex-row gap-2 md:gap-4 w-full lg:w-auto">
             {/* Timeframe Selector */}
             <div className="flex items-center space-x-1 bg-white dark:bg-secondary-900 p-1 rounded-xl md:rounded-2xl border border-slate-100 dark:border-slate-800 shadow-soft overflow-x-auto no-scrollbar">
               {['daily', 'weekly', 'monthly', 'yearly'].map((tf) => (

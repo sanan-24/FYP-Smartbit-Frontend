@@ -17,7 +17,7 @@ const Checkout = () => {
   const { items, totalAmount } = useSelector((state) => state.cart);
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { success, loading: orderLoading, error: orderError } = useSelector((state) => state.orders);
-  
+
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [formData, setFormData] = useState({
@@ -28,7 +28,7 @@ const Checkout = () => {
     city: '',
     postalCode: '',
   });
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -61,7 +61,9 @@ const Checkout = () => {
       })),
       paymentMethod: paymentMethod,
       paymentStatus: paymentIntentId ? 'paid' : 'pending',
-      transactionId: paymentIntentId,
+      // ✅ FIX: transactionId sirf tab bhejo jab actual value ho
+      // null bhejne se Joi validator fail karta tha ("must be a string")
+      ...(paymentIntentId ? { transactionId: paymentIntentId } : {}),
       firstName: formData.firstName,
       lastName: formData.lastName,
       phoneNumber: formData.phoneNumber,
@@ -72,6 +74,7 @@ const Checkout = () => {
     };
     dispatch(createOrder(orderData));
   };
+
 
   if (!isAuthenticated) {
     navigate('/login');
@@ -142,7 +145,7 @@ const Checkout = () => {
 
               <div className="space-y-4">
                 {/* Cash Option */}
-                <div 
+                <div
                   onClick={() => setPaymentMethod('cash')}
                   className={`p-4 rounded-xl flex items-center justify-between cursor-pointer border-2 transition-all ${paymentMethod === 'cash' ? 'border-primary bg-primary/5' : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'}`}
                 >
@@ -159,7 +162,7 @@ const Checkout = () => {
                 </div>
 
                 {/* Stripe Option */}
-                <div 
+                <div
                   onClick={() => setPaymentMethod('card')}
                   className={`p-4 rounded-xl flex items-center justify-between cursor-pointer border-2 transition-all ${paymentMethod === 'card' ? 'border-primary bg-primary/5' : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'}`}
                 >
@@ -174,7 +177,7 @@ const Checkout = () => {
                   </div>
                   <div className={`w-6 h-6 rounded-full border-4 ${paymentMethod === 'card' ? 'border-primary bg-white' : 'border-gray-200 bg-transparent'}`}></div>
                 </div>
-                
+
                 {paymentMethod === 'cash' ? (
                   <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 animate-in fade-in duration-300">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -184,16 +187,16 @@ const Checkout = () => {
                 ) : (
                   <div className="p-6 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 animate-in slide-in-from-top-2 duration-300">
                     <Elements stripe={stripePromise}>
-                      <StripePayment 
-                        amount={finalTotal} 
+                      <StripePayment
+                        amount={finalTotal}
                         onSuccess={(id) => handlePlaceOrder(id)}
-                        onLoading={() => {}} 
+                        onLoading={() => { }}
                       />
                     </Elements>
                   </div>
                 )}
               </div>
-              
+
               {paymentMethod === 'cash' && (
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button variant="outline" onClick={() => setStep(1)} className="flex-1">Back</Button>
@@ -223,7 +226,7 @@ const Checkout = () => {
                 </div>
               ))}
             </div>
-            
+
             <div className="border-t border-gray-100 dark:border-gray-700 pt-4 space-y-2">
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Subtotal</span>

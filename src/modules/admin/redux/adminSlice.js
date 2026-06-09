@@ -441,8 +441,12 @@ const adminSlice = createSlice({
       })
       .addCase(createRider.fulfilled, (state, action) => {
         state.loading = false;
-        const newRider = action.payload.rider || action.payload.data || action.payload;
-        state.riders.unshift(newRider);
+        // Backend returns: { statusCode: 201, data: { rider object }, message: "..." }
+        // action.payload = full backend response
+        const newRider = action.payload?.data || action.payload?.rider || action.payload;
+        if (newRider && newRider._id) {
+          state.riders.unshift(newRider);
+        }
       })
       .addCase(createRider.rejected, (state, action) => {
         state.loading = false;

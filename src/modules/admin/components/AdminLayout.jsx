@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import { useSelector } from 'react-redux';
-import { Bell, Search, Menu as MenuIcon } from 'lucide-react';
+import { Bell, Menu as MenuIcon } from 'lucide-react';
 
 const AdminLayout = () => {
   const { user } = useSelector((state) => state.auth);
@@ -27,12 +27,12 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-secondary-950 transition-colors duration-500 overflow-x-hidden">
+    <div className="flex h-screen bg-slate-50 dark:bg-secondary-950 transition-colors duration-500 overflow-hidden">
       <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
-      <div className="flex-grow flex flex-col min-w-0">
+      <div className="flex-grow flex flex-col min-w-0 overflow-hidden">
         {/* Admin Topbar */}
-        <header className="h-16 md:h-24 bg-white/80 dark:bg-secondary-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 flex items-center justify-between px-3 md:px-10 sticky top-0 z-40">
+        <header className="h-16 md:h-24 bg-white/80 dark:bg-secondary-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 flex items-center justify-between px-3 md:px-10 flex-shrink-0 z-40">
           <div className="flex items-center space-x-3 md:space-x-4 flex-grow lg:flex-grow-0">
             <button 
               onClick={() => setIsSidebarOpen(true)}
@@ -40,14 +40,6 @@ const AdminLayout = () => {
             >
               <MenuIcon size={20} className="md:size-6" />
             </button>
-            <div className="relative w-full max-w-md hidden md:block">
-              <input
-                type="text"
-                placeholder="Search analytics, orders..."
-                className="w-full bg-slate-100 dark:bg-secondary-950 border-none rounded-2xl py-3 px-12 focus:ring-2 focus:ring-primary-500/20 text-xs font-medium dark:text-white transition-all"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-secondary-400" />
-            </div>
             {/* Mobile Title */}
             <div className="md:hidden">
               <h2 className="text-lg font-black dark:text-white tracking-tight">Admin</h2>
@@ -77,7 +69,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Admin Content Area */}
-        <main className="p-3 md:p-10 flex-grow">
+        <main className="flex-grow overflow-y-auto p-3 md:p-10">
           <div className="max-w-[1600px] mx-auto w-full">
             <Outlet />
           </div>
