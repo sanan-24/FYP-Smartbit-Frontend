@@ -15,6 +15,8 @@ import {
   Camera,
   Loader2
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getRowAnimation, useTableAnimation } from '../../../utils/animationUtils';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import ConfirmModal from '../../../components/ConfirmModal';
@@ -80,6 +82,9 @@ const MenuManagement = () => {
   const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   const loading = productLoading;
+
+  // Animation hooks
+  const { isDataLoaded, direction } = useTableAnimation(loading, menuItems.length);
 
   const openEditProductModal = (product) => {
     setIsEditingProduct(true);
@@ -557,8 +562,11 @@ const MenuManagement = () => {
                 <div className="space-y-3 mt-2">
                   {filteredItems.length > 0 ? (
                     paginatedItems.map((item, index) => (
-                      <div
+                      <motion.div
                         key={item._id}
+                        initial="hidden"
+                        animate={isDataLoaded ? "visible" : "hidden"}
+                        variants={getRowAnimation(index, direction)}
                         className={`grid grid-cols-12 gap-4 items-center px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
                           index % 2 === 0
                           ? 'bg-white dark:bg-secondary-900'
@@ -598,7 +606,7 @@ const MenuManagement = () => {
                             <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
                           </button>
                         </div>
-                      </div>
+                      </motion.div>
                     ))
                   ) : (
                     <div className="py-16 md:py-24 text-center space-y-4 md:space-y-6 bg-slate-50/50 dark:bg-secondary-950/20 rounded-3xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
@@ -618,8 +626,14 @@ const MenuManagement = () => {
             {/* Mobile Card View */}
             <div className="md:hidden p-4 space-y-3">
               {filteredItems.length > 0 ? (
-                paginatedItems.map((item) => (
-                  <div key={item._id} className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md flex items-center gap-4">
+                paginatedItems.map((item, index) => (
+                  <motion.div 
+                    key={item._id} 
+                    initial="hidden"
+                    animate={isDataLoaded ? "visible" : "hidden"}
+                    variants={getRowAnimation(index, direction)}
+                    className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md flex items-center gap-4"
+                  >
                     <div className="w-16 h-16 rounded-xl bg-secondary-100 dark:bg-secondary-800 overflow-hidden flex-shrink-0 shadow-inner">
                       {item.image ? (
                         <img src={getImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover" />
@@ -647,7 +661,7 @@ const MenuManagement = () => {
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))
               ) : (
                 <div className="py-16 text-center space-y-3 bg-slate-50/50 dark:bg-secondary-950/20 rounded-2xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">

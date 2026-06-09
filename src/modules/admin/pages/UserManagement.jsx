@@ -5,9 +5,11 @@ import {
   Trash2,
   UserCircle,
   Loader2,
-  RefreshCcw,
-  Edit2
+  Edit2,
+  RefreshCcw
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getRowAnimation, useTableAnimation } from '../../../utils/animationUtils';
 import { fetchAllUsers, deleteUser } from '../redux/adminSlice';
 import Button from '../../../components/Button';
 import Pagination from '../../../components/Pagination';
@@ -18,6 +20,9 @@ const UserManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const dispatch = useDispatch();
+
+  // Animation hooks
+  const { isDataLoaded, direction } = useTableAnimation(loading, users.length);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -109,8 +114,11 @@ const UserManagement = () => {
             {/* Table Body */}
             <div className="space-y-3 mt-2">
               {paginatedUsers.length > 0 ? paginatedUsers.map((user, index) => (
-                <div 
+                <motion.div 
                   key={user._id} 
+                  initial="hidden"
+                  animate={isDataLoaded ? "visible" : "hidden"}
+                  variants={getRowAnimation(index, direction)}
                   className={`grid grid-cols-12 gap-4 items-center px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
                     index % 2 === 0 
                     ? 'bg-white dark:bg-secondary-900' 
@@ -156,7 +164,7 @@ const UserManagement = () => {
                       <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     </button>
                   </div>
-                </div>
+                </motion.div>
               )) : (
                 <div className="py-16 md:py-24 text-center space-y-4 md:space-y-6 bg-slate-50/50 dark:bg-secondary-950/20 rounded-3xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-secondary-900 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center mx-auto shadow-sm">
@@ -174,8 +182,14 @@ const UserManagement = () => {
 
         {/* Mobile Card View */}
         <div className="md:hidden p-4 space-y-3">
-          {paginatedUsers.length > 0 ? paginatedUsers.map((user) => (
-            <div key={user._id} className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md">
+          {paginatedUsers.length > 0 ? paginatedUsers.map((user, index) => (
+            <motion.div 
+              key={user._id} 
+              initial="hidden"
+              animate={isDataLoaded ? "visible" : "hidden"}
+              variants={getRowAnimation(index, direction)}
+              className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md"
+            >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center space-x-3 min-w-0">
                   <div className="w-11 h-11 rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-500 font-black text-sm uppercase flex-shrink-0">
@@ -207,7 +221,7 @@ const UserManagement = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )) : (
             <div className="py-16 text-center space-y-3 bg-slate-50/50 dark:bg-secondary-950/20 rounded-2xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
               <UserCircle className="h-10 w-10 text-secondary-300 mx-auto" />

@@ -9,6 +9,8 @@ import {
   MapPin,
   X
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getRowAnimation, useTableAnimation } from '../../../utils/animationUtils';
 import { fetchAllOrders, updateOrderAdminStatus, fetchAvailableRiders, assignRiderToOrder } from '../redux/adminSlice';
 import Button from '../../../components/Button';
 import Pagination from '../../../components/Pagination';
@@ -60,6 +62,9 @@ const OrderManagement = () => {
   const [activeTracking, setActiveTracking] = useState(null);
   const itemsPerPage = 5;
   const dispatch = useDispatch();
+
+  // Animation hooks
+  const { isDataLoaded, direction } = useTableAnimation(loading, orders.length);
 
   useEffect(() => {
     dispatch(fetchAllOrders());
@@ -203,8 +208,11 @@ const OrderManagement = () => {
             {/* Table Body */}
             <div className="space-y-2">
               {paginatedOrders.length > 0 ? paginatedOrders.map((order, index) => (
-                <div 
+                <motion.div 
                   key={order._id} 
+                  initial="hidden"
+                  animate={isDataLoaded ? "visible" : "hidden"}
+                  variants={getRowAnimation(index, direction)}
                   className={`grid grid-cols-12 gap-3 items-center px-4 py-3.5 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
                     index % 2 === 0 
                     ? 'bg-white dark:bg-secondary-900' 
@@ -284,7 +292,7 @@ const OrderManagement = () => {
                       </button>
                     )}
                   </div>
-                </div>
+                </motion.div>
               )) : (
                 <div className="py-16 md:py-24 text-center space-y-4 md:space-y-6 bg-slate-50/50 dark:bg-secondary-950/20 rounded-3xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-secondary-900 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center mx-auto shadow-sm">
@@ -302,8 +310,14 @@ const OrderManagement = () => {
 
         {/* Mobile Card View */}
         <div className="md:hidden p-4 space-y-4">
-          {paginatedOrders.length > 0 ? paginatedOrders.map((order) => (
-            <div key={order._id} className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 shadow-md overflow-hidden">
+          {paginatedOrders.length > 0 ? paginatedOrders.map((order, index) => (
+            <motion.div 
+              key={order._id} 
+              initial="hidden"
+              animate={isDataLoaded ? "visible" : "hidden"}
+              variants={getRowAnimation(index, direction)}
+              className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 shadow-md overflow-hidden"
+            >
               {/* Card Header */}
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-secondary-800/50 border-b border-secondary-100 dark:border-secondary-800">
                 <span className="font-black text-primary-500 text-sm">#{order._id.slice(-6).toUpperCase()}</span>
@@ -373,7 +387,7 @@ const OrderManagement = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )) : (
             <div className="py-16 text-center space-y-4 bg-slate-50/50 dark:bg-secondary-950/20 rounded-2xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
               <Filter className="h-10 w-10 text-secondary-300 mx-auto" />

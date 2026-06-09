@@ -13,6 +13,8 @@ import {
   AlertCircle,
   CheckCircle2
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getRowAnimation, useTableAnimation } from '../../../utils/animationUtils';
 import { createRider, fetchAllRiders, deleteRider, clearAdminError } from '../redux/adminSlice';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
@@ -35,6 +37,9 @@ const RiderManagement = () => {
   const [formError, setFormError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const dispatch = useDispatch();
+
+  // Animation hooks
+  const { isDataLoaded, direction } = useTableAnimation(loading, riders.length);
 
   useEffect(() => {
     dispatch(fetchAllRiders());
@@ -161,8 +166,11 @@ const RiderManagement = () => {
             {/* Table Body */}
             <div className="space-y-3 mt-2">
               {paginatedRiders.length > 0 ? paginatedRiders.map((rider, index) => (
-                <div 
+                <motion.div 
                   key={rider._id} 
+                  initial="hidden"
+                  animate={isDataLoaded ? "visible" : "hidden"}
+                  variants={getRowAnimation(index, direction)}
                   className={`grid grid-cols-12 gap-4 items-center px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl transition-all duration-300 group hover:shadow-lg border border-transparent ${
                     index % 2 === 0 
                     ? 'bg-white dark:bg-secondary-900' 
@@ -224,7 +232,7 @@ const RiderManagement = () => {
                       <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     </button>
                   </div>
-                </div>
+                </motion.div>
               )) : (
                 <div className="py-16 md:py-24 text-center space-y-4 md:space-y-6 bg-slate-50/50 dark:bg-secondary-950/20 rounded-3xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-secondary-900 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center mx-auto shadow-sm">
@@ -240,8 +248,14 @@ const RiderManagement = () => {
           </div>
         </div>
         <div className="md:hidden p-4 space-y-3">
-          {paginatedRiders.length > 0 ? paginatedRiders.map((rider) => (
-            <div key={rider._id} className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md">
+          {paginatedRiders.length > 0 ? paginatedRiders.map((rider, index) => (
+            <motion.div 
+              key={rider._id} 
+              initial="hidden"
+              animate={isDataLoaded ? "visible" : "hidden"}
+              variants={getRowAnimation(index, direction)}
+              className="bg-white dark:bg-secondary-900 rounded-2xl border border-secondary-100 dark:border-secondary-800 p-4 shadow-md"
+            >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center space-x-3 min-w-0">
                   <div className="w-11 h-11 rounded-xl bg-secondary-900 dark:bg-secondary-800 flex items-center justify-center text-white font-black text-sm uppercase flex-shrink-0">
@@ -273,7 +287,7 @@ const RiderManagement = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )) : (
             <div className="py-16 text-center space-y-3 bg-slate-50/50 dark:bg-secondary-950/20 rounded-2xl border-2 border-dashed border-secondary-100 dark:border-secondary-800">
               <Bike className="h-10 w-10 text-secondary-300 mx-auto" />
