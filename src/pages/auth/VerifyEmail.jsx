@@ -16,16 +16,14 @@ const VerifyEmail = () => {
   const verificationStarted = useRef(false);
 
   useEffect(() => {
-    const performVerification = async () => {
-      // Prevent double execution in React Strict Mode
-      if (verificationStarted.current) return;
-      
-      if (!token) {
-        setStatus('error');
-        setMessage('Invalid verification link. Token is missing.');
-        return;
-      }
+    if (!token) {
+      setStatus('info');
+      setMessage('We have sent a verification link to your email address. Please check your inbox (and spam folder) to verify your account.');
+      return;
+    }
 
+    const performVerification = async () => {
+      if (verificationStarted.current) return;
       verificationStarted.current = true;
 
       try {
@@ -35,7 +33,6 @@ const VerifyEmail = () => {
       } catch (err) {
         console.error('Verification Error:', err);
         setStatus('error');
-        // Handle both string errors and object errors
         const errorMessage = typeof err === 'string' ? err : (err?.message || 'Verification failed. The link may be expired or invalid.');
         setMessage(errorMessage);
       }
@@ -70,6 +67,12 @@ const VerifyEmail = () => {
               <XCircle className="w-20 h-20 text-red-500 relative z-10" />
             </div>
           )}
+          {status === 'info' && (
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary-500/20 blur-2xl rounded-full animate-pulse"></div>
+              <MailCheck className="w-20 h-20 text-primary-500 relative z-10" />
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -77,6 +80,7 @@ const VerifyEmail = () => {
             {status === 'loading' && 'Verifying Email...'}
             {status === 'success' && 'Verified!'}
             {status === 'error' && 'Oops!'}
+            {status === 'info' && 'Check Email'}
           </h2>
           <p className="text-secondary-500 dark:text-secondary-400 text-lg font-medium leading-relaxed">
             {message || 'Please wait while we process your request.'}
@@ -89,12 +93,15 @@ const VerifyEmail = () => {
               Proceed to Login <ArrowRight className="ml-3 w-6 h-6" />
             </Button>
           )}
-          {status === 'error' && (
-            <Link to="/signup">
-              <Button variant="outline" className="w-full py-5 text-xl">
-                Try Registering Again
+          {(status === 'error' || status === 'info') && (
+            <div className="space-y-4">
+              <Button onClick={() => navigate('/login')} className="w-full py-5 text-xl">
+                Go to Login <ArrowRight className="ml-3 w-6 h-6" />
               </Button>
-            </Link>
+              <Link to="/signup" className="block text-primary-500 font-bold hover:underline">
+                Back to Signup
+              </Link>
+            </div>
           )}
           {status === 'loading' && (
             <div className="h-16 flex items-center justify-center text-secondary-400 font-black uppercase tracking-[0.2em] text-sm">

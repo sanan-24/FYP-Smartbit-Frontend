@@ -72,25 +72,32 @@ const initialState = {
   error: null,
 };
 
+const applyFilters = (items, category, query) => {
+  return items.filter(item => {
+    const itemCategoryName = typeof item.categoryId === 'object' 
+      ? item.categoryId?.name 
+      : item.categoryId;
+    
+    const matchesCategory = category === 'All' || 
+      (itemCategoryName && itemCategoryName.toLowerCase() === category.toLowerCase());
+    
+    const matchesSearch = item.name.toLowerCase().includes(query.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
+  });
+};
+
 const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
     setCategory(state, action) {
       state.selectedCategory = action.payload;
-      state.filteredItems = state.items.filter(item => {
-        const itemCategoryName = typeof item.category === 'object' ? item.category?.name : item.category;
-        return (action.payload === 'All' || itemCategoryName === action.payload) &&
-               item.name.toLowerCase().includes(state.searchQuery.toLowerCase());
-      });
+      state.filteredItems = applyFilters(state.items, action.payload, state.searchQuery);
     },
     setSearchQuery(state, action) {
       state.searchQuery = action.payload;
-      state.filteredItems = state.items.filter(item => {
-        const itemCategoryName = typeof item.category === 'object' ? item.category?.name : item.category;
-        return (state.selectedCategory === 'All' || itemCategoryName === state.selectedCategory) &&
-               item.name.toLowerCase().includes(action.payload.toLowerCase());
-      });
+      state.filteredItems = applyFilters(state.items, state.selectedCategory, action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -102,7 +109,7 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
-        state.filteredItems = action.payload;
+        state.filteredItems = applyFilters(action.payload, state.selectedCategory, state.searchQuery);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;

@@ -24,7 +24,7 @@ const Signup = () => {
     e.preventDefault();
     const result = await dispatch(signupUser(formData));
     if (signupUser.fulfilled.match(result)) {
-      navigate('/');
+      navigate('/verify-email');
     }
   };
 

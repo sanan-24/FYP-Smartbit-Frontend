@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ShoppingCart, Heart, Search, Menu, X,
-  LogOut, User, ClipboardList, Home as HomeIcon, LayoutGrid,
+  ShoppingCart, Heart, Menu, X,
+  LogOut, User, ClipboardList, Home as HomeIcon, LayoutGrid, UtensilsCrossed,
 } from 'lucide-react';
 import { logoutUser } from '../features/authSlice';
 
@@ -56,15 +56,17 @@ const Navbar = () => {
   return (
     <>
       {/* ── Navbar ── */}
-      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-gray-100 border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
 
             {/* Logo */}
             <div className="flex items-center">
-              <Link to="/" className="flex items-center gap-2">
-                <img src="/logo.jpg" alt="Smart Bite" className="h-10 w-auto rounded-full" />
-                <span className="text-2xl font-black text-gray-900 tracking-tighter hidden sm:block">Smart Bite</span>
+              <Link to="/" className="flex items-center gap-3 group">
+                <img src="/logo.png" alt="Smart Bite" className="h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                <span className="text-3xl font-black text-gray-900 tracking-tighter hidden sm:block">
+                  Smart<span className="text-primary-500">Bite</span>
+                </span>
               </Link>
             </div>
 
@@ -73,11 +75,6 @@ const Navbar = () => {
               {[{ to: '/', label: 'Home' }, { to: '/menu', label: 'Menu' }, ...(isAuthenticated ? [{ to: '/orders', label: 'Orders' }] : [])].map(({ to, label }) => (
                 <Link key={to} to={to} className={`font-bold transition-colors ${isActive(to) ? 'text-primary-500' : 'text-gray-600 hover:text-primary-500'}`}>{label}</Link>
               ))}
-
-              <div className="relative group">
-                <input type="text" placeholder="Search cravings..." className="bg-gray-50 border border-gray-200 rounded-2xl py-2.5 px-5 pl-12 w-64 text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500/20" />
-                <Search className="absolute left-4 top-3 h-4 w-4 text-gray-400" />
-              </div>
 
               <div className={`flex items-center space-x-4 ${isAuthenticated ? 'border-l border-gray-200 pl-8' : ''}`}>
                 {isAuthenticated && !isAuthPage && (
@@ -104,10 +101,10 @@ const Navbar = () => {
                       </div>
                     </Link>
                     <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                      <div className="w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+                      <div className="w-48 bg-gray-100 rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
                         <Link to="/profile" className="flex items-center space-x-3 px-5 py-4 hover:bg-gray-50 text-gray-700"><User className="w-4 h-4" /><span className="text-sm font-bold">My Profile</span></Link>
-                        <Link to="/orders" className="flex items-center space-x-3 px-5 py-4 hover:bg-gray-50 text-gray-700 border-t border-gray-100"><ClipboardList className="w-4 h-4" /><span className="text-sm font-bold">My Orders</span></Link>
-                        <button onClick={handleLogout} className="w-full flex items-center space-x-3 px-5 py-4 hover:bg-red-50 text-red-600 border-t border-gray-100"><LogOut className="w-4 h-4" /><span className="text-sm font-bold">Logout</span></button>
+                        <Link to="/orders" className="flex items-center space-x-3 px-5 py-4 hover:bg-gray-50 text-gray-700 border-t border-gray-200"><ClipboardList className="w-4 h-4" /><span className="text-sm font-bold">My Orders</span></Link>
+                        <button onClick={handleLogout} className="w-full flex items-center space-x-3 px-5 py-4 hover:bg-red-50 text-red-600 border-t border-gray-200"><LogOut className="w-4 h-4" /><span className="text-sm font-bold">Logout</span></button>
                       </div>
                     </div>
                   </div>
@@ -151,25 +148,24 @@ const Navbar = () => {
           <div style={{
             position: 'absolute', top: 0, right: 0, height: '100%',
             width: '80%', maxWidth: '320px',
-            backgroundColor: '#ffffff',
+            backgroundColor: 'var(--color-surface)',
             display: 'flex', flexDirection: 'column',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+            boxShadow: '0 25px 50px -12px rgba(139,69,19,0.25)',
             zIndex: 10000,
           }}>
             {/* Header */}
-            <div style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #f3f4f6', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+            <div style={{ backgroundColor: 'var(--color-surface)', borderBottom: '1px solid var(--color-border)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <img src="/logo.jpg" alt="Smart Bite" style={{ height: '36px', borderRadius: '50%' }} />
-                <span style={{ fontSize: '18px', fontWeight: 900, color: '#111827', letterSpacing: '-0.5px' }}>Smart Bite</span>
+                <img src="/logo.png" alt="Smart Bite" style={{ height: '48px', width: 'auto', objectFit: 'contain' }} />
               </div>
-              <button onClick={() => setIsOpen(false)} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#f3f4f6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                <X size={20} color="#374151" />
+              <button onClick={() => setIsOpen(false)} style={{ padding: '8px', borderRadius: '12px', backgroundColor: 'var(--color-bg)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <X size={20} color="var(--color-text-muted)" />
               </button>
             </div>
 
             {/* Nav Links */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '16px', backgroundColor: '#ffffff' }}>
-              <p style={{ fontSize: '9px', fontWeight: 900, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '3px', padding: '0 12px', marginBottom: '8px' }}>Navigation</p>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '16px', backgroundColor: 'var(--color-surface)' }}>
+              <p style={{ fontSize: '9px', fontWeight: 900, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '3px', padding: '0 12px', marginBottom: '8px' }}>Navigation</p>
 
               {navLinks.map(({ to, label, icon: Icon, badge }) => (
                 <Link
@@ -180,35 +176,35 @@ const Navbar = () => {
                     display: 'flex', alignItems: 'center', gap: '12px',
                     padding: '12px', borderRadius: '16px', marginBottom: '4px',
                     textDecoration: 'none', fontWeight: 700, fontSize: '14px',
-                    backgroundColor: isActive(to) ? 'rgba(22,163,74,0.08)' : 'transparent',
-                    color: isActive(to) ? '#15803d' : '#374151',
+                    backgroundColor: isActive(to) ? 'rgba(255,107,53,0.08)' : 'transparent',
+                    color: isActive(to) ? 'var(--color-primary)' : 'var(--color-text)',
                   }}
                 >
-                  <div style={{ padding: '8px', borderRadius: '10px', backgroundColor: isActive(to) ? 'rgba(22,163,74,0.12)' : '#f3f4f6', display: 'flex' }}>
-                    <Icon size={18} color={isActive(to) ? '#15803d' : '#6b7280'} />
+                  <div style={{ padding: '8px', borderRadius: '10px', backgroundColor: isActive(to) ? 'rgba(255,107,53,0.12)' : 'var(--color-bg)', display: 'flex' }}>
+                    <Icon size={18} color={isActive(to) ? 'var(--color-primary)' : 'var(--color-text-muted)'} />
                   </div>
                   <span style={{ flex: 1 }}>{label}</span>
                   {badge > 0 && (
-                    <span style={{ backgroundColor: '#f97316', color: '#fff', fontSize: '9px', fontWeight: 900, borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{badge}</span>
+                    <span style={{ backgroundColor: 'var(--color-primary)', color: '#fff', fontSize: '9px', fontWeight: 900, borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{badge}</span>
                   )}
                 </Link>
               ))}
             </div>
 
             {/* Footer */}
-            <div style={{ padding: '16px', borderTop: '1px solid #f3f4f6', backgroundColor: '#f9fafb', flexShrink: 0 }}>
+            <div style={{ padding: '16px', borderTop: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg)', flexShrink: 0 }}>
               {isAuthenticated ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <Link to="/profile" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #f3f4f6', textDecoration: 'none', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-                    <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: '#f97316', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                  <Link to="/profile" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '16px', backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', textDecoration: 'none', boxShadow: '0 1px 3px rgba(139,69,19,0.06)' }}>
+                    <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: 'var(--color-primary)', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                       {user?.profilePhoto
                         ? <img src={getImageUrl(user.profilePhoto)} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         : <span style={{ color: '#fff', fontWeight: 900, fontSize: '16px' }}>{user?.firstName?.charAt(0) || user?.email?.charAt(0)}</span>
                       }
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: '14px', fontWeight: 900, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.firstName} {user?.lastName}</p>
-                      <p style={{ fontSize: '11px', color: '#6b7280', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email}</p>
+                      <p style={{ fontSize: '14px', fontWeight: 900, color: 'var(--color-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.firstName} {user?.lastName}</p>
+                      <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email}</p>
                     </div>
                   </Link>
                   <button onClick={handleLogout} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px', borderRadius: '16px', backgroundColor: '#fef2f2', color: '#dc2626', fontWeight: 900, fontSize: '14px', border: 'none', cursor: 'pointer' }}>
@@ -218,8 +214,8 @@ const Navbar = () => {
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <Link to="/login" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px', borderRadius: '16px', backgroundColor: '#f3f4f6', color: '#111827', fontWeight: 900, fontSize: '14px', textDecoration: 'none' }}>Login</Link>
-                  <Link to="/signup" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px', borderRadius: '16px', backgroundColor: '#f97316', color: '#fff', fontWeight: 900, fontSize: '14px', textDecoration: 'none' }}>Sign Up</Link>
+                  <Link to="/login" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px', borderRadius: '16px', backgroundColor: 'var(--color-bg)', color: 'var(--color-text)', fontWeight: 900, fontSize: '14px', textDecoration: 'none', border: '1px solid var(--color-border)' }}>Login</Link>
+                  <Link to="/signup" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px', borderRadius: '16px', backgroundColor: 'var(--color-primary)', color: '#fff', fontWeight: 900, fontSize: '14px', textDecoration: 'none' }}>Sign Up</Link>
                 </div>
               )}
             </div>

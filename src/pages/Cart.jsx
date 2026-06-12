@@ -19,7 +19,7 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-32 text-center space-y-8">
-        <div className="bg-slate-50 dark:bg-secondary-900 w-32 h-32 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-soft">
+        <div className="bg-slate-50 w-32 h-32 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-soft">
           <ShoppingBag className="h-16 w-16 text-secondary-300" />
         </div>
         <div className="space-y-3">
@@ -44,7 +44,7 @@ const Cart = () => {
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-6 md:space-y-8">
           {items.map((item) => (
-            <div key={item.id} className="flex flex-col sm:flex-row items-center bg-white dark:bg-app-surface-dark p-6 md:p-8 rounded-[2rem] shadow-soft border border-slate-100 dark:border-slate-800 gap-6 md:gap-8 theme-transition hover:shadow-premium relative">
+            <div key={item.id} className="flex flex-col sm:flex-row items-center bg-slate-100 p-6 md:p-8 rounded-[2rem] shadow-soft border border-slate-200 gap-6 md:gap-8 theme-transition hover:shadow-premium relative">
               <div className="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 rounded-2xl overflow-hidden shadow-soft">
                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
               </div>
@@ -52,20 +52,20 @@ const Cart = () => {
               <div className="flex-grow space-y-1 md:space-y-2 text-center sm:text-left">
                 <h3 className="text-xl md:text-2xl font-black text-secondary-900 dark:text-white tracking-tight">{item.name}</h3>
                 <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-secondary-400">{item.category}</p>
-                <p className="text-primary-500 font-black text-xl md:text-2xl">${item.price}</p>
+                <p className="text-primary-500 font-black text-lg md:text-xl">Rs. {item.price}</p>
               </div>
               
-              <div className="flex items-center space-x-4 md:space-x-6 bg-slate-50 dark:bg-secondary-900 p-2 md:p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+              <div className="flex items-center space-x-4 md:space-x-6 bg-slate-50 p-2 md:p-3 rounded-2xl border border-slate-200">
                 <button 
                   onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                  className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white dark:bg-secondary-800 rounded-xl shadow-soft hover:text-primary-500 transition-colors text-secondary-600 dark:text-slate-300 font-bold"
+                  className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-slate-100 rounded-xl shadow-soft hover:text-primary-500 transition-colors text-secondary-600 font-bold"
                 >
                   <Minus size={16} />
                 </button>
-                <span className="w-6 md:w-8 text-center text-lg md:text-xl font-black text-secondary-900 dark:text-white">{item.quantity}</span>
+                <span className="w-6 md:w-8 text-center text-lg md:text-xl font-black text-secondary-900">{item.quantity}</span>
                 <button 
                   onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                  className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-white dark:bg-secondary-800 rounded-xl shadow-soft hover:text-primary-500 transition-colors text-secondary-600 dark:text-slate-300 font-bold"
+                  className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-slate-100 rounded-xl shadow-soft hover:text-primary-500 transition-colors text-secondary-600 font-bold"
                 >
                   <Plus size={16} />
                 </button>
@@ -83,27 +83,27 @@ const Cart = () => {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-app-surface-dark p-10 rounded-[2.5rem] shadow-premium border border-slate-100 dark:border-slate-800 sticky top-28 space-y-10">
-            <h2 className="text-2xl font-black text-secondary-900 dark:text-white tracking-tight border-b border-slate-100 dark:border-slate-800 pb-6 uppercase text-center tracking-[0.2em] text-xs">Summary</h2>
+          <div className="bg-slate-100 p-10 rounded-[2.5rem] shadow-premium border border-slate-200 sticky top-28 space-y-10">
+            <h2 className="text-2xl font-black text-secondary-900 tracking-tight border-b border-slate-200 pb-6 uppercase text-center tracking-[0.2em] text-xs">Summary</h2>
             
             <div className="space-y-6">
               <div className="flex justify-between text-secondary-500 dark:text-secondary-400 font-bold">
                 <span>Subtotal</span>
-                <span className="text-secondary-900 dark:text-white font-black">${totalAmount.toFixed(2)}</span>
+                <span className="text-secondary-900 dark:text-white font-black">Rs. {totalAmount.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-secondary-500 dark:text-secondary-400 font-bold">
                 <span>Delivery Fee</span>
-                <span className="text-secondary-900 dark:text-white font-black">$2.50</span>
+                <span className="text-secondary-900 dark:text-white font-black">Rs. 150</span>
               </div>
               <div className="flex justify-between text-secondary-500 dark:text-secondary-400 font-bold">
                 <span>Tax (5%)</span>
-                <span className="text-secondary-900 dark:text-white font-black">${(totalAmount * 0.05).toFixed(2)}</span>
+                <span className="text-secondary-900 dark:text-white font-black">Rs. {(totalAmount * 0.05).toLocaleString()}</span>
               </div>
               
-              <div className="border-t border-slate-100 dark:border-slate-800 pt-8 flex justify-between items-center">
-                <span className="text-lg font-black text-secondary-900 dark:text-white uppercase tracking-widest">Total</span>
-                <span className="text-4xl font-black text-primary-500">
-                  ${(totalAmount + 2.50 + totalAmount * 0.05).toFixed(2)}
+              <div className="border-t border-slate-200 pt-8 flex justify-between items-center">
+                <span className="text-lg font-black text-secondary-900 uppercase tracking-widest">Total</span>
+                <span className="text-3xl font-black text-primary-500">
+                  Rs. {(totalAmount + 150 + totalAmount * 0.05).toLocaleString()}
                 </span>
               </div>
             </div>

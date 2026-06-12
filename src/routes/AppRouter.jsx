@@ -82,7 +82,7 @@ const router = createBrowserRouter([
       { path: 'signup', element: <Signup /> },
       { path: 'forgot-password', element: <ForgotPassword /> },
       { path: 'reset-password', element: <ResetPassword /> },
-      { path: 'api/v1/auth/verify-email', element: <VerifyEmail /> },
+      { path: 'verify-email', element: <VerifyEmail /> },
     ],
   },
   {

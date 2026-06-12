@@ -101,7 +101,7 @@ const Profile = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="bg-white dark:bg-secondary-900 rounded-3xl shadow-xl overflow-hidden border border-secondary-100 dark:border-secondary-800">
+      <div className="bg-slate-100 rounded-3xl shadow-xl overflow-hidden border border-slate-200">
         {/* Header */}
         <div className="bg-secondary-900 dark:bg-secondary-950 p-8 sm:p-12 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-8 relative z-10">
@@ -228,7 +228,7 @@ const Profile = () => {
                 {menuItems.map((item, idx) => (
                   <button 
                     key={idx}
-                    className="flex items-start p-6 rounded-2xl hover:bg-secondary-50 dark:hover:bg-secondary-800/50 transition-all border border-secondary-100 dark:border-secondary-800 group text-left shadow-sm hover:shadow-md"
+                    className="flex items-start p-6 rounded-2xl hover:bg-secondary-50 transition-all border border-slate-200 group text-left shadow-sm hover:shadow-md"
                   >
                     <div className="bg-primary-500/10 p-4 rounded-2xl mr-5 group-hover:bg-primary-500 group-hover:text-white transition-colors">
                       <item.icon className="h-6 w-6 text-primary-500 group-hover:text-inherit" />
@@ -241,10 +241,10 @@ const Profile = () => {
                 ))}
               </div>
 
-              <div className="pt-8 border-t border-secondary-100 dark:border-secondary-800">
+              <div className="pt-8 border-t border-slate-200">
                 <button 
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center space-x-3 py-5 rounded-2xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 font-black transition-all border-2 border-red-50 dark:border-red-900/20"
+                  className="w-full flex items-center justify-center space-x-3 py-5 rounded-2xl text-red-600 hover:bg-red-50 font-black transition-all border-2 border-red-100"
                 >
                   <LogOut className="h-6 w-6" />
                   <span className="text-lg">Logout Account</span>

@@ -7,28 +7,107 @@
 :root {
   color-scheme: light;
 
-  --color-primary: #2f5d50;
-  --color-primary-hover: #284f44;
-  --color-primary-active: #224339;
+  --color-primary: #ff4d30;
+  --color-primary-hover: #e63e22;
+  --color-primary-active: #c93217;
 
-  --color-secondary: #6a4d36;
-  --color-accent: #2c5a64;
+  --color-primary-50: #fff0ed;
+  --color-primary-100: #ffdcd6;
+  --color-primary-200: #ffbdae;
+  --color-primary-300: #ff937d;
+  --color-primary-400: #ff6f54;
+  --color-primary-500: #ff4d30;
+  --color-primary-600: #e63e22;
+  --color-primary-700: #c93217;
+  --color-primary-800: #ad2710;
+  --color-primary-900: #8f1f0a;
+  --color-primary-950: #5c1003;
 
-  --color-bg: #f4f1ea;
-  --color-surface: #fffcf7;
-  --color-border: #d8d0c3;
+  --color-secondary: #2b2b2b;
+  --color-secondary-50: #f7f7f7;
+  --color-secondary-100: #e3e3e3;
+  --color-secondary-200: #c7c7c7;
+  --color-secondary-300: #a8a8a8;
+  --color-secondary-400: #8a8a8a;
+  --color-secondary-500: #6b6b6b;
+  --color-secondary-600: #505050;
+  --color-secondary-700: #3c3c3c;
+  --color-secondary-800: #2b2b2b;
+  --color-secondary-900: #1a1a1a;
+  --color-secondary-950: #0d0d0d;
 
-  --color-text: #1f2a24;
-  --color-text-muted: #4b5a52;
+  --color-accent: #ffc857;
+  --color-accent-50: #fffcf2;
+  --color-accent-100: #fff7d6;
+  --color-accent-200: #ffeda3;
+  --color-accent-300: #ffdf70;
+  --color-accent-400: #ffc857;
+  --color-accent-500: #ffc857;
+  --color-accent-600: #e6b03c;
+  --color-accent-700: #cc9723;
+  --color-accent-800: #a67912;
+  --color-accent-900: #805b07;
+  --color-accent-950: #543b02;
 
-  --color-success: #3f6b45;
-  --color-error: #8a4b43;
-  --color-warning: #8a6a2a;
-  --color-info: #3d6673;
+  --color-bg: #f1f3f5;
+  --color-surface: #ffffff;
+  --color-border: #dee2e6;
 
-  --shadow-soft: 0 2px 8px rgba(24, 37, 32, 0.08);
-  --shadow-premium: 0 8px 24px rgba(24, 37, 32, 0.12);
-  --focus-ring: 0 0 0 3px rgba(44, 90, 100, 0.3);
+  --color-text: #212529;
+  --color-text-muted: #6c757d;
+
+  --color-success: #22c55e;
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+
+  --color-error: #ef4444;
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+
+  --color-warning: #f59e0b;
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+
+  --color-info: #3b82f6;
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-200: #bfdbfe;
+  --color-info-300: #93c5fd;
+  --color-info-400: #60a5fa;
+  --color-info-500: #3b82f6;
+  --color-info-600: #2563eb;
+  --color-info-700: #1d4ed8;
+  --color-info-800: #1e40af;
+  --color-info-900: #1e3a8a;
+
+  --shadow-soft: 0 4px 20px -8px rgba(33, 37, 41, 0.06);
+  --shadow-premium: 0 18px 38px -16px rgba(33, 37, 41, 0.1);
+  --shadow-glow: 0 0 0 1px rgba(255, 77, 48, 0.05), 0 12px 24px -12px rgba(255, 77, 48, 0.35);
+  --focus-ring: 0 0 0 3px rgba(255, 77, 48, 0.25);
 }
 
 @layer base {
@@ -42,8 +121,8 @@
     background-color: var(--color-bg);
     min-height: 100vh;
     background-image:
-      radial-gradient(circle at 10% -20%, rgba(47, 93, 80, 0.08) 0%, transparent 45%),
-      radial-gradient(circle at 90% 0%, rgba(44, 90, 100, 0.08) 0%, transparent 40%);
+      radial-gradient(circle at 10% -20%, rgba(255, 77, 48, 0.04) 0%, transparent 45%),
+      radial-gradient(circle at 90% 0%, rgba(43, 43, 43, 0.04) 0%, transparent 40%);
   }
 
   h1,
@@ -60,8 +139,8 @@
   }
 
   ::selection {
-    background-color: rgba(47, 93, 80, 0.28);
-    color: #102017;
+    background-color: rgba(255, 77, 48, 0.2);
+    color: #212529;
   }
 }
 

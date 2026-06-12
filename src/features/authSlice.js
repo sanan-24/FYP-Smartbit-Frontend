@@ -228,16 +228,14 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(signupUser.fulfilled, (state, action) => {
+      .addCase(signupUser.fulfilled, (state) => {
         state.loading = false;
-        state.isAuthenticated = true;
-        state.user = action.payload;
-        saveUserToStorage(action.payload);
+        state.isAuthenticated = false;
+        state.user = null;
       })
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        clearUserFromStorage();
       })
       // Logout
       .addCase(logoutUser.fulfilled, (state) => {

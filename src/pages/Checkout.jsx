@@ -85,8 +85,8 @@ const Checkout = () => {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center space-y-8">
         <div className="flex justify-center">
-          <div className="bg-green-100 dark:bg-green-900/30 p-4 rounded-full">
-            <CheckCircle2 className="h-20 w-20 text-green-500" />
+          <div className="bg-success-100 p-4 rounded-full">
+            <CheckCircle2 className="h-20 w-20 text-success-500" />
           </div>
         </div>
         <div className="space-y-4">
@@ -116,9 +116,9 @@ const Checkout = () => {
           </div>
 
           {step === 1 ? (
-            <div className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
-              <h2 className="text-xl md:text-2xl font-bold dark:text-white flex items-center">
-                <Truck className="mr-3 text-primary" /> Delivery Information
+            <div className="bg-slate-100 p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
+              <h2 className="text-xl md:text-2xl font-bold flex items-center">
+                <Truck className="mr-3 text-primary-500" /> Delivery Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="John" required />
@@ -131,9 +131,9 @@ const Checkout = () => {
               <Button onClick={() => setStep(2)} className="w-full py-4 md:py-5">Continue to Payment</Button>
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
-              <h2 className="text-xl md:text-2xl font-bold dark:text-white flex items-center">
-                <CreditCard className="mr-3 text-primary" /> Payment Method
+            <div className="bg-slate-100 p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
+              <h2 className="text-xl md:text-2xl font-bold flex items-center">
+                <CreditCard className="mr-3 text-primary-500" /> Payment Method
               </h2>
 
               {orderError && (
@@ -147,45 +147,45 @@ const Checkout = () => {
                 {/* Cash Option */}
                 <div
                   onClick={() => setPaymentMethod('cash')}
-                  className={`p-4 rounded-xl flex items-center justify-between cursor-pointer border-2 transition-all ${paymentMethod === 'cash' ? 'border-primary bg-primary/5' : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'}`}
+                  className={`p-4 rounded-xl flex items-center justify-between cursor-pointer border-2 transition-all ${paymentMethod === 'cash' ? 'border-primary bg-primary-500/5' : 'border-slate-200 bg-slate-100'}`}
                 >
                   <div className="flex items-center">
-                    <div className="bg-white dark:bg-gray-700 p-2 rounded-lg mr-4 shadow-sm">
-                      <Truck className="text-primary" />
+                    <div className="bg-slate-100 p-2 rounded-lg mr-4 shadow-sm">
+                      <Truck className="text-primary-500" />
                     </div>
                     <div>
-                      <p className="font-bold dark:text-white">Cash on Delivery</p>
+                      <p className="font-bold">Cash on Delivery</p>
                       <p className="text-xs text-gray-500">Pay when your food arrives</p>
                     </div>
                   </div>
-                  <div className={`w-6 h-6 rounded-full border-4 ${paymentMethod === 'cash' ? 'border-primary bg-white' : 'border-gray-200 bg-transparent'}`}></div>
+                  <div className={`w-6 h-6 rounded-full border-4 ${paymentMethod === 'cash' ? 'border-primary bg-white' : 'border-slate-200 bg-transparent'}`}></div>
                 </div>
 
                 {/* Stripe Option */}
                 <div
                   onClick={() => setPaymentMethod('card')}
-                  className={`p-4 rounded-xl flex items-center justify-between cursor-pointer border-2 transition-all ${paymentMethod === 'card' ? 'border-primary bg-primary/5' : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'}`}
+                  className={`p-4 rounded-xl flex items-center justify-between cursor-pointer border-2 transition-all ${paymentMethod === 'card' ? 'border-primary bg-primary-500/5' : 'border-slate-200 bg-slate-100'}`}
                 >
                   <div className="flex items-center">
-                    <div className="bg-white dark:bg-gray-700 p-2 rounded-lg mr-4 shadow-sm">
-                      <CreditCard className="text-primary" />
+                    <div className="bg-slate-100 p-2 rounded-lg mr-4 shadow-sm">
+                      <CreditCard className="text-primary-500" />
                     </div>
                     <div>
-                      <p className="font-bold dark:text-white">Online Payment (Stripe)</p>
+                      <p className="font-bold">Online Payment (Stripe)</p>
                       <p className="text-xs text-gray-500">Secure payment via credit/debit card</p>
                     </div>
                   </div>
-                  <div className={`w-6 h-6 rounded-full border-4 ${paymentMethod === 'card' ? 'border-primary bg-white' : 'border-gray-200 bg-transparent'}`}></div>
+                  <div className={`w-6 h-6 rounded-full border-4 ${paymentMethod === 'card' ? 'border-primary bg-white' : 'border-slate-200 bg-transparent'}`}></div>
                 </div>
 
                 {paymentMethod === 'cash' ? (
-                  <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 animate-in fade-in duration-300">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 animate-in fade-in duration-300">
+                    <p className="text-sm text-gray-600">
                       You've selected <strong>Cash on Delivery</strong>. Please ensure you have the exact amount ready for the rider.
                     </p>
                   </div>
                 ) : (
-                  <div className="p-6 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 animate-in slide-in-from-top-2 duration-300">
+                  <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 animate-in slide-in-from-top-2 duration-300">
                     <Elements stripe={stripePromise}>
                       <StripePayment
                         amount={finalTotal}
@@ -214,31 +214,31 @@ const Checkout = () => {
 
         {/* Order Summary Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 sticky top-24 space-y-6">
-            <h2 className="text-xl font-bold dark:text-white">Your Order</h2>
+          <div className="bg-slate-100 p-8 rounded-2xl shadow-lg border border-slate-200 sticky top-24 space-y-6">
+            <h2 className="text-xl font-bold">Your Order</h2>
             <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
               {items.map((item) => (
                 <div key={item.id} className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    <span className="font-bold text-gray-900 dark:text-white">{item.quantity}x</span> {item.name}
+                  <span className="text-gray-600">
+                    <span className="font-bold text-gray-900">{item.quantity}x</span> {item.name}
                   </span>
-                  <span className="font-semibold dark:text-white">Rs. {(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-semibold">Rs. {Math.round(item.price * item.quantity).toLocaleString()}</span>
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-gray-100 dark:border-gray-700 pt-4 space-y-2">
+            <div className="border-t border-slate-200 pt-4 space-y-2">
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Subtotal</span>
-                <span>Rs. {totalAmount.toFixed(2)}</span>
+                <span>Rs. {Math.round(totalAmount).toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Delivery Fee</span>
                 <span>Rs. {deliveryFee}</span>
               </div>
-              <div className="flex justify-between text-lg font-bold dark:text-white pt-2">
+              <div className="flex justify-between text-lg font-bold pt-2">
                 <span>Total</span>
-                <span className="text-primary dark:text-secondary">Rs. {finalTotal}</span>
+                <span className="text-primary-500">Rs. {Math.round(finalTotal).toLocaleString()}</span>
               </div>
             </div>
           </div>

@@ -60,7 +60,7 @@ const OrderManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [activeTracking, setActiveTracking] = useState(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
   const dispatch = useDispatch();
 
   // Animation hooks
@@ -160,9 +160,6 @@ const OrderManagement = () => {
           <Button variant="outline" onClick={() => dispatch(fetchAllOrders())} className="flex-1 sm:flex-none flex items-center justify-center text-[10px] md:text-sm py-2.5 md:py-3 px-4 md:px-6 rounded-xl md:rounded-2xl">
             <RefreshCcw className={`mr-2 h-3.5 w-3.5 md:h-4 md:w-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </Button>
-          <Button className="flex-1 sm:flex-none flex items-center justify-center text-[10px] md:text-sm py-2.5 md:py-3 px-4 md:px-6 rounded-xl md:rounded-2xl">
-            Export CSV
-          </Button>
         </div>
       </div>
 
@@ -173,17 +170,7 @@ const OrderManagement = () => {
       )}
 
       <div className="bg-white dark:bg-secondary-900 rounded-[1.5rem] md:rounded-[2rem] shadow-xl border border-secondary-100 dark:border-secondary-800 overflow-hidden transition-all duration-500">
-        <div className="p-4 md:p-8 border-b border-secondary-100 dark:border-secondary-800 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 bg-slate-50/50 dark:bg-secondary-950/30">
-          <div className="relative w-full md:w-96 group">
-            <input
-              type="text"
-              placeholder="Search by ID, Name or Email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white dark:bg-secondary-900 border-2 border-secondary-100 dark:border-secondary-800 rounded-xl md:rounded-2xl py-2.5 md:py-3.5 px-10 md:px-12 focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 text-xs md:text-sm dark:text-white transition-all outline-none"
-            />
-            <Search className="absolute left-3.5 md:left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-secondary-400 group-focus-within:text-primary-500 transition-colors" />
-          </div>
+        <div className="p-4 md:p-8 border-b border-secondary-100 dark:border-secondary-800 flex flex-col md:flex-row md:items-center justify-end gap-4 md:gap-6 bg-slate-50/50 dark:bg-secondary-950/30">
           <div className="flex items-center">
             <div className="flex items-center space-x-2 bg-white dark:bg-secondary-900 px-3 md:px-4 py-2 rounded-lg md:rounded-xl border border-secondary-100 dark:border-secondary-800 shadow-sm">
               <span className="text-[9px] md:text-xs font-black uppercase tracking-widest text-secondary-400">Total Orders:</span>
@@ -269,7 +256,7 @@ const OrderManagement = () => {
 
                   <div className="col-span-2 text-center">
                     <div className="flex flex-col items-center">
-                      <span className="font-black text-secondary-900 dark:text-white text-xs">Rs. {order.totalAmount || order.total || 0}</span>
+                      <span className="font-black text-secondary-900 dark:text-white text-xs">Rs. {Math.round(order.totalAmount || order.total || 0).toLocaleString()}</span>
                       <span className="text-[9px] text-secondary-400 font-bold">{new Date(order.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
@@ -348,7 +335,7 @@ const OrderManagement = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-black text-secondary-900 dark:text-white text-sm">Rs. {order.totalAmount || order.total || 0}</p>
+                    <p className="font-black text-secondary-900 dark:text-white text-sm">Rs. {Math.round(order.totalAmount || order.total || 0).toLocaleString()}</p>
                     <p className="text-[9px] text-secondary-400 font-bold">{new Date(order.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>

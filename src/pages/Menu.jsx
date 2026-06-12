@@ -32,7 +32,7 @@ const Menu = () => {
             placeholder="Search our menu..."
             value={searchQuery}
             onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-            className="w-full bg-white dark:bg-secondary-900 border-2 border-slate-100 dark:border-white/5 rounded-3xl py-4 md:py-5 px-12 md:px-14 focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 text-secondary-900 dark:text-white transition-all font-bold shadow-soft group-hover:shadow-md"
+            className="w-full bg-slate-100 border-2 border-slate-200 rounded-3xl py-4 md:py-5 px-12 md:px-14 focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 text-secondary-900 transition-all font-bold shadow-soft group-hover:shadow-md"
           />
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 md:h-6 md:w-6 text-secondary-400 group-focus-within:text-primary-500 transition-colors" />
         </div>
@@ -40,7 +40,7 @@ const Menu = () => {
 
       {/* Categories */}
       <div className="flex items-center space-x-4 overflow-x-auto pb-6 scrollbar-hide">
-        <div className="flex-shrink-0 bg-white dark:bg-secondary-900 p-3 rounded-2xl shadow-soft border border-slate-100 dark:border-slate-800">
+        <div className="flex-shrink-0 bg-slate-100 p-3 rounded-2xl shadow-soft border border-slate-200">
           <Filter className="h-6 w-6 text-primary-500" />
         </div>
         
@@ -50,7 +50,7 @@ const Menu = () => {
           className={`flex-shrink-0 px-8 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 ${
             selectedCategory === 'All'
               ? 'bg-primary-500 text-white shadow-glow translate-y-[-2px]'
-              : 'bg-white dark:bg-secondary-900 text-secondary-500 dark:text-secondary-400 hover:bg-slate-50 dark:hover:bg-secondary-800 shadow-soft border border-slate-100 dark:border-slate-800'
+              : 'bg-slate-100 text-secondary-500 hover:bg-slate-50 shadow-soft border border-slate-200'
           }`}
         >
           All
@@ -70,7 +70,7 @@ const Menu = () => {
               className={`flex-shrink-0 px-8 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 ${
                 selectedCategory === category.name
                   ? 'bg-primary-500 text-white shadow-glow translate-y-[-2px]'
-                  : 'bg-white dark:bg-secondary-900 text-secondary-500 dark:text-secondary-400 hover:bg-slate-50 dark:hover:bg-secondary-800 shadow-soft border border-slate-100 dark:border-slate-800'
+                  : 'bg-slate-100 text-secondary-500 hover:bg-slate-50 shadow-soft border border-slate-200'
               }`}
             >
               {category.name}
@@ -80,11 +80,11 @@ const Menu = () => {
       </div>
 
       {/* Results Count & Filter Info */}
-      <div className="flex items-center justify-between py-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex items-center justify-between py-4 border-b border-slate-200">
         <p className="text-secondary-400 font-bold uppercase tracking-widest text-xs">
-          Showing <span className="text-secondary-900 dark:text-white">{filteredItems.length}</span> signature results
+          Showing <span>{filteredItems.length}</span> signature results
         </p>
-        <button className="flex items-center text-primary-600 dark:text-primary-400 font-black text-sm hover:underline underline-offset-4 decoration-2">
+        <button className="flex items-center text-primary-600 font-black text-sm hover:underline underline-offset-4 decoration-2">
           <SlidersHorizontal className="h-4 w-4 mr-2" /> Refine Search
         </button>
       </div>
@@ -93,7 +93,7 @@ const Menu = () => {
       {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
           {filteredItems.map((item) => (
-            <ProductCard key={item.id} item={item} />
+            <ProductCard key={item._id} item={item} />
           ))}
         </div>
       ) : (

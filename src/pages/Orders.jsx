@@ -140,8 +140,8 @@ const Orders = () => {
           {orders.map((order, index) => {
             const orderId = order._id || order.id || `order-${index}`;
             return (
-              <div key={orderId} className="bg-white dark:bg-secondary-900 rounded-[2.5rem] md:rounded-[3rem] shadow-soft border border-slate-100 dark:border-white/5 overflow-hidden">
-                <div className="p-6 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-slate-100 dark:border-white/5">
+              <div key={orderId} className="bg-slate-100 rounded-[2.5rem] md:rounded-[3rem] shadow-soft border border-slate-200 overflow-hidden">
+                <div className="p-6 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-slate-200">
                   <div className="flex items-center space-x-4 md:space-x-6">
                     <div className="bg-primary-500/10 p-3 md:p-4 rounded-2xl">
                       <Package className="h-6 w-6 md:h-8 md:w-8 text-primary-500" />
@@ -161,7 +161,7 @@ const Orders = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-[10px] md:text-xs font-black text-secondary-400 uppercase tracking-[0.2em]">Total</p>
-                      <p className="text-xl md:text-2xl font-black text-primary-500 tracking-tighter">Rs. {order.totalAmount || order.total || 0}</p>
+                      <p className="text-lg md:text-xl font-black text-primary-500 tracking-tighter">Rs. {Math.round(order.totalAmount || order.total || 0).toLocaleString()}</p>
                     </div>
                     <button 
                       onClick={() => toggleOrderDetails(orderId)}
@@ -175,7 +175,7 @@ const Orders = () => {
                 {expandedOrderId === orderId && (
                   <div className="p-6 md:p-10 space-y-8 md:space-y-10 animate-in slide-in-from-top-4 duration-300">
                     {/* Order Items */}
-                    <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl">
+                    <div className="bg-slate-50 p-6 rounded-2xl">
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                         <h4 className="text-sm font-black text-secondary-400 uppercase tracking-widest">Order Items</h4>
                         {order.status === 'delivered' && (
@@ -185,7 +185,7 @@ const Orders = () => {
                       <div className="flex flex-wrap gap-3">
                         {order.items && order.items.length > 0 ? (
                           order.items.map((item, idx) => (
-                            <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-white dark:bg-gray-700 px-4 py-3 rounded-2xl text-sm border border-gray-100 dark:border-gray-600 shadow-sm group transition-all hover:shadow-md">
+                            <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-slate-100 px-4 py-3 rounded-2xl text-sm border border-slate-200 shadow-sm group transition-all hover:shadow-md">
                               <div className="flex items-center space-x-3">
                                 <span className="font-black text-primary-500">{item.quantity}x</span>
                                 <span className="font-bold text-secondary-700 dark:text-gray-200">{item.product?.name || item.name || 'Product'}</span>
@@ -216,7 +216,7 @@ const Orders = () => {
                     
                     {/* Map Section - Only show if order is out for delivery */}
                     {order.status === 'out-for-delivery' && order.rider && (
-                      <div className="rounded-[2rem] md:rounded-[2.5rem] overflow-hidden border border-gray-100 dark:border-gray-700 shadow-inner">
+                      <div className="rounded-[2rem] md:rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-inner">
                         <LiveTrackingMap 
                           riderId={order.rider._id || order.rider} 
                           orderId={orderId}

@@ -359,11 +359,16 @@ const adminSlice = createSlice({
         state.error = action.payload;
       })
       // Update Order Status
+      .addCase(updateOrderAdminStatus.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(updateOrderAdminStatus.fulfilled, (state, action) => {
-        const updatedOrder = action.payload.order || action.payload;
-        const index = state.orders.findIndex(o => o._id === updatedOrder._id);
+        state.loading = false;
+        const updatedOrder = action.payload.data || action.payload.order || action.payload;
+        const index = state.orders.findIndex(o => (o._id || o.id) === (updatedOrder._id || updatedOrder.id));
         if (index !== -1) {
-          state.orders[index] = updatedOrder;
+          // Merge to preserve any local fields if necessary, though backend should be source of truth
+          state.orders[index] = { ...state.orders[index], ...updatedOrder };
         }
       })
       // Assign Rider
@@ -372,25 +377,19 @@ const adminSlice = createSlice({
       })
       .addCase(assignRiderToOrder.fulfilled, (state, action) => {
         state.loading = false;
-        // The backend returns the updated order in action.payload.data
         const updatedOrder = action.payload.data || action.payload.order || action.payload;
         
-        // 1. Update order in list
-        const index = state.orders.findIndex(o => o._id === updatedOrder._id);
+        const index = state.orders.findIndex(o => (o._id || o.id) === (updatedOrder._id || updatedOrder.id));
         if (index !== -1) {
-          state.orders[index] = updatedOrder;
+          state.orders[index] = { ...state.orders[index], ...updatedOrder };
         }
 
-        // 2. Remove rider from available list real-time
-        // Check if updatedOrder.rider exists and get its ID
         if (updatedOrder.rider) {
           const riderId = typeof updatedOrder.rider === 'string' 
             ? updatedOrder.rider 
             : updatedOrder.rider._id;
             
-          console.log("Removing rider from available list:", riderId);
-          // Filter out the assigned rider from the 'riders' state
-          state.riders = state.riders.filter(r => r._id !== riderId);
+          state.availableRiders = state.availableRiders.filter(r => (r._id || r.id) !== riderId);
         }
       })
       .addCase(assignRiderToOrder.rejected, (state, action) => {
