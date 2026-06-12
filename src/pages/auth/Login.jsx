@@ -93,7 +93,7 @@ const Login = () => {
             className="w-full mb-12"
           >
             <Link to="/" className="flex items-center gap-4">
-              <img src="/logo.jpg" alt="Smart Bite" className="h-16 w-auto rounded-full shadow-2xl" />
+              <img src="/logo.png" alt="Smart Bite" className="h-16 w-auto object-contain shadow-2xl" />
               <span className="text-5xl font-black text-white tracking-tighter drop-shadow-lg">Smart Bite</span>
             </Link>
           </motion.div>
