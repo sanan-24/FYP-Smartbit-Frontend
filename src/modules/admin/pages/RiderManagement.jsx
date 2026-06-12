@@ -8,23 +8,85 @@ import {
   Bike,
   RefreshCcw,
   Plus,
-  Power,
   X,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getRowAnimation, useTableAnimation } from '../../../utils/animationUtils';
 import { createRider, fetchAllRiders, deleteRider, clearAdminError } from '../redux/adminSlice';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import Pagination from '../../../components/Pagination';
 
+// Confirmation Modal Component
+const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, riderName }) => {
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+        />
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          className="relative w-full max-w-md bg-white dark:bg-secondary-900 rounded-[2rem] shadow-2xl border border-secondary-100 dark:border-secondary-800 overflow-hidden"
+        >
+          <div className="p-8 text-center space-y-6">
+            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-3xl flex items-center justify-center mx-auto">
+              <AlertTriangle className="h-10 w-10 text-red-600 dark:text-red-500" />
+            </div>
+            
+            <div className="space-y-2">
+              <h3 className="text-2xl font-black text-secondary-900 dark:text-white tracking-tight">Delete Rider?</h3>
+              <p className="text-secondary-500 dark:text-secondary-400 font-medium">
+                Are you sure you want to delete <span className="text-secondary-900 dark:text-white font-black">{riderName}</span>? This action is permanent and cannot be undone.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button 
+                onClick={onClose}
+                className="flex-1 py-4 px-6 rounded-2xl bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-300 font-black uppercase tracking-widest text-xs hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-all active:scale-95"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={onConfirm}
+                className="flex-1 py-4 px-6 rounded-2xl bg-red-600 text-white font-black uppercase tracking-widest text-xs hover:bg-red-700 shadow-lg shadow-red-600/20 transition-all active:scale-95"
+              >
+                Delete Rider
+              </button>
+            </div>
+          </div>
+          
+          <button 
+            onClick={onClose}
+            className="absolute top-6 right-6 p-2 text-secondary-400 hover:text-secondary-600 dark:hover:text-white transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </motion.div>
+      </div>
+    </AnimatePresence>
+  );
+};
+
 const RiderManagement = () => {
   const { riders, loading, error: adminError } = useSelector((state) => state.admin);
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, riderId: null, riderName: '' });
   const itemsPerPage = 8;
   const [formData, setFormData] = useState({
     firstName: '',
@@ -88,14 +150,13 @@ const RiderManagement = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this rider?')) {
-      dispatch(deleteRider(id));
-    }
+  const openDeleteModal = (id, name) => {
+    setDeleteModal({ isOpen: true, riderId: id, riderName: name });
   };
 
-  const handleToggleStatus = (id) => {
-    // Status toggle logic
+  const confirmDelete = () => {
+    dispatch(deleteRider(deleteModal.riderId));
+    setDeleteModal({ isOpen: false, riderId: null, riderName: '' });
   };
 
   const filteredRiders = riders.filter(rider => 
@@ -214,18 +275,7 @@ const RiderManagement = () => {
 
                   <div className="col-span-2 text-right flex justify-end space-x-1.5 md:space-x-2">
                     <button 
-                      onClick={() => handleToggleStatus(rider._id)}
-                      className={`p-2 md:p-2.5 rounded-lg md:rounded-xl transition-all shadow-sm active:scale-90 ${
-                        rider.isActive 
-                        ? 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white' 
-                        : 'bg-green-50 text-green-500 hover:bg-green-500 hover:text-white'
-                      }`}
-                      title={rider.isActive ? 'Deactivate' : 'Activate'}
-                    >
-                      <Power className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(rider._id)}
+                      onClick={() => openDeleteModal(rider._id, rider.name)}
                       className="p-2 md:p-2.5 bg-secondary-100 dark:bg-secondary-800 rounded-lg md:rounded-xl text-secondary-400 hover:text-red-500 hover:bg-red-500/10 transition-all shadow-sm active:scale-90"
                       title="Delete Rider"
                     >
@@ -276,13 +326,7 @@ const RiderManagement = () => {
               <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50 dark:border-secondary-800">
                 <p className="text-xs font-bold text-secondary-500">{rider.phoneNumber}</p>
                 <div className="flex gap-1.5">
-                  <button
-                    onClick={() => handleToggleStatus(rider._id)}
-                    className={`p-2 rounded-lg transition-all active:scale-90 ${rider.isActive ? 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white' : 'bg-green-50 text-green-500 hover:bg-green-500 hover:text-white'}`}
-                  >
-                    <Power className="h-4 w-4" />
-                  </button>
-                  <button onClick={() => handleDelete(rider._id)} className="p-2 bg-secondary-100 dark:bg-secondary-800 rounded-lg text-secondary-400 hover:text-red-500 hover:bg-red-500/10 transition-all active:scale-90">
+                  <button onClick={() => openDeleteModal(rider._id, rider.name)} className="p-2 bg-secondary-100 dark:bg-secondary-800 rounded-lg text-secondary-400 hover:text-red-500 hover:bg-red-500/10 transition-all active:scale-90">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
@@ -412,6 +456,12 @@ const RiderManagement = () => {
           </div>
         </div>
       )}
+      <DeleteConfirmationModal 
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ ...deleteModal, isOpen: false })}
+        onConfirm={confirmDelete}
+        riderName={deleteModal.riderName}
+      />
     </div>
   );
 };
